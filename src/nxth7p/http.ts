@@ -1,5 +1,7 @@
 import {createServer} from 'http';
-import { parse_request } from './HttpReq';
+
+import dbg from './debug';
+import { parse_body_json, parse_param_filter_json, parse_request } from './HttpReq';
 
 /** TYPES */
 import type {
@@ -7,8 +9,13 @@ import type {
   IncomingMessage,
   ServerResponse,
 } from 'http';
-import type HttpErr from './HttpErr';
-import HttpCtrl from './HttpCtrl';
+import HttpErr from './HttpErr';
+import HttpRes from './HttpRes';
+import type HttpCtrl from './HttpCtrl';
+import type HttpReq from './HttpReq';
+import type HttpRouteConf from './HttpRoute';
+import HttpContentType from './HttpContentType';
+import { once } from 'events';
 
 class Server {
   host: string = '';
@@ -31,27 +38,72 @@ class Server {
     });
   }
 
-  add_controller = (ctrl: HttpCtrl) => {
-    this.ctrls.push(ctrl);
+  private _exec_controllers = async (req: HttpReq, res: ServerResponse): Promise<HttpRes> => {
+    let count = -1;
+    let ctrl: HttpCtrl;
+    let route_conf: HttpRouteConf | null = null;
+    while (ctrl = this.ctrls[++count]) {
+      route_conf = ctrl.exe(req);
+      if (route_conf) {
+        break;
+      }
+    }
+    if (!route_conf) {
+      throw new HttpErr({
+        status_code: 404,
+      });
+    }
+    if (!route_conf.fn) {
+      throw new HttpErr({
+        status_code: 500,
+        message: `Error [${route_conf.pathname}] bind_route`
+      });
+    }
+    if (route_conf.req.body.content_type === HttpContentType.JSON) {
+      await parse_body_json(req);
+    }
+    if (route_conf.req.filter.content_type === HttpContentType.JSON) {
+      parse_param_filter_json(req);
+    }
+    const res_data = await route_conf.fn(req, res);
+    let res_body = res_data;
+    if (route_conf.res.content.content_type === HttpContentType.JSON) {
+      res_body = JSON.stringify(res_data);
+    }
+    return new HttpRes({
+      body: res_body,
+      status_code: route_conf.res.status_code,
+      content_type: route_conf.res.content.content_type,
+    });
   }
 
   private _req_hander = (req: IncomingMessage, res: ServerResponse) => {
-    parse_request(req).then((response) => {
-      res.statusCode = response.status_code;
-      res.setHeader('content-type', response.content_type);
-      res.end(response.body);
+    parse_request(req).then((p_req) => {
+      dbg("processing request [%s]", req.url);
+      return this._exec_controllers(p_req, res);
+    }).then((p_res) => {
+      dbg('responding request [%s] %o', req.url, p_res);
+      res.statusCode = p_res.status_code || 200;
+      res.setHeader('Content-Type', p_res.content_type || 'application/json');
+      res.end(p_res.body);
     }).catch((err: HttpErr) => {
+      dbg("error request [%s] [%o]", req.url, err);
       res.statusCode = err.status_code || 500;
-      res.setHeader('content-type', 'application/json');
+      res.setHeader('Content-Type', 'application/json');
       res.end(err.body);
     });
   }
 
-  close = () => {
-    this.n_http.close();
+  public add_controller = (ctrl: HttpCtrl) => {
+    this.ctrls.push(ctrl);
   }
 
-  listen = (host: string, port?: number) => {
+  public close = async () => {
+    this.n_http.close();
+    await once(this.n_http, 'close');
+  }
+
+  public listen = (host: string, port?: number) => {
     this.host = host;
     this.port = port || 0;
     let host_ptr = this.host;

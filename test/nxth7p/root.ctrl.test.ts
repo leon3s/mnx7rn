@@ -1,0 +1,77 @@
+import path from 'path';
+import axios from 'axios';
+import {test_server} from './helper';
+
+import type {
+  AxiosInstance,
+} from 'axios';
+
+let api: AxiosInstance;
+
+describe('[NXTH7P_ROOT_CONTROLLER]', () => {
+  beforeAll(() => {
+    test_server.listen(`unix://${path.join(__dirname, './test.socket')}`);
+    api = axios.create({
+      socketPath: path.join(__dirname, './test.socket'),
+    });
+  });
+
+  it('invoke [GET /] expect 200', async () => {
+    const res = await api.get('/');
+    expect(res.status).toBe(200);
+    expect(res.data.name).toBe('test_server');
+  });
+
+  it('invoke [GET /ping] expect 200', async () => {
+    const res = await api.get('/ping');
+    expect(res.status).toBe(200);
+    expect(res.data).toStrictEqual({ pong: true, filter: {} });
+  });
+
+  it('invoke [GET /ping?filter={ping=true}] expect 200', async () => {
+    const res = await api.get('/ping', {
+      params: {
+        filter: {
+          ping: true,
+        }
+      }
+    });
+    expect(res.status).toBe(200);
+    expect(res.data).toStrictEqual({
+        pong: true,
+        filter: {
+          ping: true,
+        }
+      });
+  });
+
+  it('invoke [POST /test_post body: { ping: true }] expect 200', async () => {
+    const res = await api.post('/test_post', {
+      ping: true,
+    });
+    expect(res.status).toBe(200);
+    expect(res.data).toStrictEqual({
+      body: {
+        ping: true,
+      },
+      pong: true,
+    });
+  });
+
+  it('invoke [PATCH /test_patch body: { ping: true }] expect 200', async () => {
+    const res = await api.patch('/test_patch', {
+      ping: true,
+    });
+    expect(res.status).toBe(200);
+    expect(res.data).toStrictEqual({
+      body: {
+        ping: true,
+      },
+      pong: true,
+    });
+  });
+
+  afterAll(async () => {
+    await test_server.close();
+  });
+});

@@ -11,7 +11,7 @@
     "start": "node .",
     "build": "tsc",
     "watch:build": "tsc -w",
-    "test": "jest",
+    "test": "jest --verbose",
     "clean": "rm -r dist",
     "debug": "node-debug inspect ."
   },

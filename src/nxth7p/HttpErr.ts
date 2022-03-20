@@ -5,6 +5,10 @@ export default class HttpErr {
 
   constructor(error: Partial<HttpErr>) {
     this.status_code = error.status_code || 500;
-    this.body = JSON.stringify(error);
+    this.body = JSON.stringify({
+      ...error,
+      body: undefined,
+      status_code: undefined,
+    });
   }
 }
