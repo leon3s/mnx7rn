@@ -1,0 +1,7 @@
+{
+  "editor.tabSize": 2,
+  "editor.minimap.enabled": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
