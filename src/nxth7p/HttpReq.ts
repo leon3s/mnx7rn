@@ -2,12 +2,14 @@ import HttpErr from "./HttpErr";
 import HttpMd, { HttpMdKey } from './HttpMd';
 
 import type { IncomingMessage } from "http"; 
+import type { HttpRouteVar } from "./HttpRoute";
 
 export default interface HttpReq extends IncomingMessage {
   method: HttpMd;
   p_body: any;
   p_url: URL;
   p_filter: any;
+  p_params: HttpRouteVar;
 };
 
 export function parse_param_filter_json(req: HttpReq) {

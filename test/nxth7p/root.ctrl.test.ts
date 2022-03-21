@@ -71,6 +71,29 @@ describe('[NXTH7P_ROOT_CONTROLLER]', () => {
     });
   });
 
+  it('invoke [GET /{name}] expect 200', async () => {
+    const res = await api.get('/toto');
+    expect(res.status).toBe(200);
+    expect(res.data).toStrictEqual({
+      params: {
+        name: 'toto',
+      },
+      pong: true,
+    });
+  });
+
+  it('invoke [GET /{name}/{test}] expect 200', async () => {
+    const res = await api.get('/toto/tata');
+    expect(res.status).toBe(200);
+    expect(res.data).toStrictEqual({
+      params: {
+        name: 'toto',
+        test: 'tata',
+      },
+      pong: true,
+    });
+  });
+
   afterAll(async () => {
     await test_server.close();
   });

@@ -14,20 +14,25 @@ class HttpCtrl {
     this.path = path || '/';
   }
 
-  match_paths = (route_paths: string[], req_paths: string[], route_var: HttpRouteVar = {}) => {
+  match_paths = (route_paths: string[], req_paths: string[]): HttpRouteVar | null => {
     let c_path = -1;
     let curr_path: string;
+    const route_vars: HttpRouteVar = {};
     while (curr_path = route_paths[++c_path]) {
       let req_path = req_paths[c_path];
       if (curr_path.startsWith('{')) {
-        console.log(curr_path.replace(/{(.*)}/gm, '$1'));
+        const name = curr_path.replace(/{(.*)}/gm, '$1');
+        route_vars[name] = req_path;
         continue;
       }
       if (curr_path !== req_path) {
         break;
       }
     }
-    return c_path === route_paths.length && c_path === req_paths.length;
+    if (c_path === route_paths.length && c_path === req_paths.length) {
+      return route_vars;
+    }
+    return null;
   }
 
   extract_paths = (s: string) => {
@@ -49,8 +54,9 @@ class HttpCtrl {
       const route_pathname = route.replace(`${req.method}`, '').trim();
       const route_paths = this.extract_paths(route_pathname);
       const req_paths = this.extract_paths(req.p_url.pathname);
-      const is_matching = this.match_paths(route_paths, req_paths);
-      if (is_matching) {
+      const route_vars = this.match_paths(route_paths, req_paths);
+      if (route_vars) {
+        req.p_params = route_vars;
         route_conf = this[route]() as HttpRouteConf;
         route_conf.pathname = req.p_url.pathname;
         break;

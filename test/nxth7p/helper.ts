@@ -42,8 +42,15 @@ class RootCtrl extends HttpCtrl {
   "GET /{name}" = () => {
     const [route, bind_route] = create_route();
     bind_route(async (req) => {
-      console.log('GET /{name}');
-      return { pong: true };
+      return { pong: true, params: req.p_params };
+    });
+    return route;
+  }
+
+  "GET /{name}/{test}" = () => {
+    const [route, bind_route] = create_route();
+    bind_route(async (req) => {
+      return { pong: true, params: req.p_params };
     });
     return route;
   }

@@ -12,6 +12,8 @@
     "build": "tsc",
     "watch:build": "tsc -w",
     "test": "jest --verbose",
+    "test:http": "jest --verbose ./test/nxth7p",
+    "test:parser": "jest --verbose ./test/np4rser",
     "clean": "rm -r dist",
     "debug": "node-debug inspect ."
   },
