@@ -5,7 +5,9 @@ type CommandFn = (...args: any[]) => Promise<any> | any;
 
 const commands: Record<string, CommandFn> = {
   deamon: async (host, port) => {
-    deamon.listen('unix://./test.socket');
+    let h_deamon = host || 'unix://./test.socket';
+    deamon.listen(h_deamon, port);
+    console.log(`[${process.pid}] deamon listening on ${h_deamon}${port ? `:${port}` : ''}`);
   }
 }
 

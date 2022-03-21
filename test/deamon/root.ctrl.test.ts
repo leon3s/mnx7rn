@@ -8,7 +8,7 @@ import type {
 
 let api: AxiosInstance;
 
-describe('[NXTH7P_ROOT_CONTROLLER]', () => {
+describe('[DEAMON_ROOT_CONTROLLER]', () => {
   beforeAll(() => {
     deamon.listen(`unix://${path.join(__dirname, './test-root-deamon.socket')}`);
     api = axios.create({
@@ -25,7 +25,7 @@ describe('[NXTH7P_ROOT_CONTROLLER]', () => {
   it('invoke [GET /ping] expect 200', async () => {
     const res = await api.get('/ping');
     expect(res.status).toBe(200);
-    expect(res.data).toStrictEqual({ pong: true, filter: {} });
+    expect(res.data).toStrictEqual({ pong: true });
   });
 
   afterAll(async () => {

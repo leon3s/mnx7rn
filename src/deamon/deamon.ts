@@ -1,7 +1,11 @@
 import Server from '../nxth7p';
+import controllers from './controllers';
 
 const deamon = new Server();
 
-// deamon.add_controller(root_ctrl);
+Object.keys(controllers).forEach((key) => {
+  const controller = controllers[key];
+  deamon.add_controller(controller);
+});
 
 export default deamon;
