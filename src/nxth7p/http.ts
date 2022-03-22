@@ -3,7 +3,6 @@ import {createServer} from 'http';
 import dbg from './debug';
 import { parse_body_json, parse_param_filter_json, parse_request } from './HttpReq';
 
-/** TYPES */
 import type {
   Server as HttpServer,
   IncomingMessage,

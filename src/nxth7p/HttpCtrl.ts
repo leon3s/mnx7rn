@@ -46,7 +46,7 @@ class HttpCtrl {
     let count = -1;
     let route: string;
     let route_conf: HttpRouteConf | null = null;
-    const routes = this.get_route();
+    const routes = this.get_routes();
     while (route = routes[++count]) {
       if (!route.startsWith(req.method)) {
         continue;
@@ -65,7 +65,7 @@ class HttpCtrl {
     return route_conf;
   }
 
-  get_route = () => {
+  get_routes = () => {
     const keys = Object.keys(this);
     return keys.filter((key) => {
       const isFound = HttpMdKey.find((method) => {
