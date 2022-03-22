@@ -1,9 +1,8 @@
-import HttpCtrl from "../../nxth7p/HttpCtrl";
-import { create_route } from "../../nxth7p/HttpRoute";
+import { Ctrl, route_gen } from "../../nxth7p";
 
-export class RootCtrl extends HttpCtrl {
+export class RootCtrl extends Ctrl {
   "GET /" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async () => {
       return {
         name: 'deamon',
@@ -13,7 +12,7 @@ export class RootCtrl extends HttpCtrl {
   }
 
   "GET /ping" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async () => {
       return { pong: true };
     });

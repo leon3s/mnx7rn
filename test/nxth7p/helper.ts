@@ -1,12 +1,15 @@
-import Server from '../../src/nxth7p';
-import HttpCtrl from '../../src/nxth7p/HttpCtrl';
-import { create_route } from '../../src/nxth7p/HttpRoute';
+import {
+  Ctrl,
+  Server,
+  route_gen,
+  ContentTypeEnum,
+} from '../../src/nxth7p';
 
 export const test_server = new Server();
 
-class RootCtrl extends HttpCtrl {
+class RootCtrl extends Ctrl {
   "GET /" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async () => {
       return {
         name: 'test_server',
@@ -16,15 +19,27 @@ class RootCtrl extends HttpCtrl {
   }
 
   "GET /ping" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
+    route.req.search_params.qs = {
+      content_type: 'application/json',
+      schema: {
+        type: 'object',
+        properties: {
+          message: {
+            type: "string"
+          }
+        }
+      }
+    };
     bind_route(async (req) => {
-      return { pong: true, filter: req.p_filter };
+      return { message: "pong", qs: req.p_sp.qs };
     });
     return route;
   }
 
   "POST /test_post" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
+    route.req.body.content_type = ContentTypeEnum.JSON;
     bind_route(async (req) => {
       return { body: req.p_body, pong: true };
     });
@@ -32,7 +47,8 @@ class RootCtrl extends HttpCtrl {
   }
 
   "PATCH /test_patch" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
+    route.req.body.content_type = ContentTypeEnum.JSON;
     bind_route(async (req) => {
       return { body: req.p_body, pong: true };
     });
@@ -40,7 +56,7 @@ class RootCtrl extends HttpCtrl {
   }
 
   "GET /{name}" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       return { pong: true, params: req.p_params };
     });
@@ -48,7 +64,7 @@ class RootCtrl extends HttpCtrl {
   }
 
   "GET /{name}/{test}" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       return { pong: true, params: req.p_params };
     });

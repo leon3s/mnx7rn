@@ -1,4 +1,4 @@
-import Server from '../nxth7p';
+import {Server} from '../nxth7p';
 import controllers from './controllers';
 
 const deamon = new Server();

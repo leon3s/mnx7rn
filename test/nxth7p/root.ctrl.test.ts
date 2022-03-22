@@ -25,22 +25,22 @@ describe('[NXTH7P_ROOT_CONTROLLER]', () => {
   it('invoke [GET /ping] expect 200', async () => {
     const res = await api.get('/ping');
     expect(res.status).toBe(200);
-    expect(res.data).toStrictEqual({ pong: true, filter: {} });
+    expect(res.data).toStrictEqual({ message: "pong" });
   });
 
-  it('invoke [GET /ping?filter={ping=true}] expect 200', async () => {
+  it('invoke [GET /ping?qs={message: "ping"}] expect 200', async () => {
     const res = await api.get('/ping', {
       params: {
-        filter: {
-          ping: true,
+        qs: {
+          message: "ping",
         }
       }
     });
     expect(res.status).toBe(200);
     expect(res.data).toStrictEqual({
-        pong: true,
-        filter: {
-          ping: true,
+        message: "pong",
+        qs: {
+          message: "ping",
         }
       });
   });

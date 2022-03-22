@@ -1,10 +1,10 @@
-import HttpCtrl from "../../nxth7p/HttpCtrl";
+import {Ctrl} from "../../nxth7p";
 
 import { RootCtrl } from "./root";
 import { NetworkCtrl } from "./network";
 import { ContainerCtrl } from './container';
 
-const controllers: Record<string, InstanceType<typeof HttpCtrl>> = {
+const controllers: Record<string, InstanceType<typeof Ctrl>> = {
   root_ctrl: new RootCtrl(),
   network_ctrl: new NetworkCtrl(),
   container_ctrl: new ContainerCtrl(),

@@ -1,13 +1,14 @@
-import HttpCtrl from "../../nxth7p/HttpCtrl";
-import HttpErr from "../../nxth7p/HttpErr";
-import { create_route } from "../../nxth7p/HttpRoute";
-
+import {
+  Ctrl,
+  HttpErr,
+  route_gen,
+  ContentTypeEnum
+} from "../../nxth7p";
 import { docker_service } from "../services";
-import type { DockerServiceErr } from "../services/docker";
 
-export class ContainerCtrl extends HttpCtrl {
+export class ContainerCtrl extends Ctrl {
   "GET /containers" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async () => {
       return docker_service.containers_find();
     });
@@ -15,7 +16,7 @@ export class ContainerCtrl extends HttpCtrl {
   }
 
   "GET /containers/{id_or_name}" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       const {id_or_name} = req.p_params;
       return docker_service.containers_find_by_id_or_name(id_or_name);
@@ -24,7 +25,8 @@ export class ContainerCtrl extends HttpCtrl {
   }
 
   "POST /containers" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
+    route.req.body.content_type = ContentTypeEnum.JSON;
     bind_route(async (req) => {
       try {
         const container = await docker_service.containers_create(req.p_body);
@@ -40,7 +42,7 @@ export class ContainerCtrl extends HttpCtrl {
   }
 
   "DELETE /containers/{id_or_name}" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       const {id_or_name} = req.p_params;
       return docker_service.containers_delete_by_id_or_name(id_or_name);

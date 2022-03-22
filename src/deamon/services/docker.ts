@@ -1,11 +1,6 @@
 import Dockerode from "dockerode";
 
-import HttpErr from "../../nxth7p/HttpErr";
-
-export type DockerServiceErr = any & {
-  statusCode: number;
-  json: { message: string };
-};
+import { HttpErr } from "../../nxth7p/HttpRFC";
 
 import type {
   ContainerInfo,

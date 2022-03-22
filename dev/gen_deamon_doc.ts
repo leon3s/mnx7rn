@@ -23,6 +23,4 @@ ${JSON.stringify(c_route.res, null, 2)}
   });
 }));
 
-console.log(c_ctrl);
-
 fs.writeFileSync(out_path, c_ctrl);

@@ -6,7 +6,7 @@ import type {
   AxiosInstance,
 } from 'axios';
 import type {
-  ContainerInfo, ContainerInspectInfo,
+  ContainerInspectInfo,
 } from 'dockerode';
 
 let api: AxiosInstance;
@@ -43,7 +43,6 @@ describe('[DEAMON_CONTAINER_CONTROLLER]', () => {
       }
     });
     container = res.data;
-    console.log({container});
     expect(container.Name).toBe('/test');
   });
 
