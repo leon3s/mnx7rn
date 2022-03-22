@@ -21,7 +21,14 @@ class CtrlManager {
     this.ctrls.push(ctrl);
   }
 
-  match_paths = (route_paths: string[], req_paths: string[]): HttpReqParams | null => {
+  ex_url_path = (s: string) => {
+    return s.split('/').map((_s) => {
+      if (!_s.length) return '/';
+      return _s;
+    });
+  }
+
+  ctrl_match_route = (route_paths: string[], req_paths: string[]): HttpReqParams | null => {
     let c_path = -1;
     let curr_path: string;
     const route_vars: HttpReqParams = {};
@@ -42,26 +49,29 @@ class CtrlManager {
     return null;
   }
 
-  extract_paths = (s: string) => {
-    return s.split('/').map((_s) => {
-      if (!_s.length) return '/';
-      return _s;
+  ctrl_get_routes = (ctrl: Ctrl) => {
+    const keys = Object.keys(ctrl);
+    return keys.filter((key) => {
+      const isFound = HttpMethodKey.find((method) => {
+        return key.startsWith(method);
+      });
+      return isFound;
     });
   }
 
-  exec_ctrl = (ctrl: Ctrl, req: HttpReqPartial): RouteConf | null => {
+  route_conf_find = (ctrl: Ctrl, req: HttpReqPartial): RouteConf | null => {
     let count = -1;
     let route: string;
     let route_conf: RouteConf | null = null;
-    const routes = this.get_ctrl_routes(ctrl);
+    const routes = this.ctrl_get_routes(ctrl);
     while (route = routes[++count]) {
       if (!route.startsWith(req.method)) {
         continue;
       }
       const route_pathname = route.replace(`${req.method}`, '').trim();
-      const route_paths = this.extract_paths(route_pathname);
-      const req_paths = this.extract_paths(req.p_url.pathname);
-      const route_vars = this.match_paths(route_paths, req_paths);
+      const route_paths = this.ex_url_path(route_pathname);
+      const req_paths = this.ex_url_path(req.p_url.pathname);
+      const route_vars = this.ctrl_match_route(route_paths, req_paths);
       if (route_vars) {
         req.p_params = route_vars;
         route_conf = ctrl[route]() as RouteConf;
@@ -72,54 +82,54 @@ class CtrlManager {
     return route_conf;
   }
 
-  get_ctrl_routes = (ctrl: Ctrl) => {
-    const keys = Object.keys(ctrl);
-    return keys.filter((key) => {
-      const isFound = HttpMethodKey.find((method) => {
-        return key.startsWith(method);
-      });
-      return isFound;
-    });
-  }
-
-  exec_from_req = async (req: HttpReqPartial, res: ServerResponse): Promise<HttpRes> => {
-    let count = -1;
-    let ctrl: Ctrl;
-    let route_conf: RouteConf | null = null;
-    while (ctrl = this.ctrls[++count]) {
-      route_conf = this.exec_ctrl(ctrl, req);
-      if (route_conf) {
-        break;
-      }
-    }
-    if (!route_conf) {
-      throw new HttpErr({
-        status_code: 404,
-        message: `Route ${req.p_url.pathname} doesn't exist.`,
-      });
-    }
-    if (!route_conf.fn) {
-      throw new HttpErr({
-        status_code: 500,
-        message: `Error [${route_conf.pathname}] bind_route`
-      });
-    }
-    if (route_conf.req.body.content_type === HttpContentTypeEnum.JSON) {
+  route_before = async (req: HttpReqPartial, route_conf: RouteConf) => {
+    const { req: { body, search_params } } = route_conf;
+    if (body.content_type === HttpContentTypeEnum.JSON) {
       await parse_body_json(req);
     }
-    if (route_conf.req.filter.content_type === HttpContentTypeEnum.JSON) {
-      parse_param_filter_json(req);
-    }
-    const res_data = await route_conf.fn(req, res);
-    let res_body = res_data;
-    if (route_conf.res.content.content_type === HttpContentTypeEnum.JSON) {
-      res_body = JSON.stringify(res_data);
+    await Promise.all(Object.keys(search_params).map((key) => {
+      const search_param = search_params[key];
+      parse_param_filter_json(key, req);
+    }));
+  }
+
+  route_after = (route_conf: RouteConf, data: any) => {
+    let res_body = data;
+    const {res: {content}} = route_conf;
+    if (content.content_type === HttpContentTypeEnum.JSON) {
+      res_body = JSON.stringify(data);
     }
     return new HttpRes({
       body: res_body,
       status_code: route_conf.res.status_code,
       content_type: route_conf.res.content.content_type,
     });
+  }
+
+  route_conf_verify = (req: HttpReqPartial, route_conf?: RouteConf | null): RouteConf => {
+    if (!route_conf) {
+      throw new HttpErr({
+        status_code: 404,
+        message: `Route ${req.p_url.pathname} doesn't exist.`,
+      });
+    }
+    return route_conf;
+  }
+
+  process_route = async (req: HttpReqPartial, res: ServerResponse): Promise<HttpRes> => {
+    let count = -1;
+    let ctrl: Ctrl;
+    let route_conf: RouteConf | null = null;
+    while (ctrl = this.ctrls[++count]) {
+      route_conf = this.route_conf_find(ctrl, req);
+      if (route_conf) {
+        break;
+      }
+    }
+    route_conf = this.route_conf_verify(req, route_conf);
+    await this.route_before(req, route_conf);
+    const data = await route_conf.fn(req, res);
+    return this.route_after(route_conf, data);
   }
 }
 

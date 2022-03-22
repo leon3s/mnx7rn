@@ -51,7 +51,7 @@ export interface HttpReqPartial extends IncomingMessage {
   method: HttpMethod;
   p_body: HttpReqBody;
   p_params: HttpReqParams;
-  p_sp?: HttpReqSearchParams;
+  p_sp: HttpReqSearchParams;
 };
 
 /**

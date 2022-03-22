@@ -45,7 +45,7 @@ class Server {
   private _req_hander = (req: IncomingMessage, res: ServerResponse) => {
     prepare_request(req).then((p_req) => {
       dbg("processing request [%s]", req.url);
-      return this.c_manager.exec_from_req(p_req, res);
+      return this.c_manager.process_route(p_req, res);
     }).then((p_res) => {
       dbg('responding request [%s] %o', req.url, p_res);
       res.statusCode = p_res.status_code || 200;

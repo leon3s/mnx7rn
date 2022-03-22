@@ -3,15 +3,15 @@ import {HttpContentTypeEnum, HttpContentType} from './HttpRFC';
 import type { ServerResponse } from "http";
 import type { HttpReqPartial } from './HttpRFC';
 
+export type RouteDataType = {
+  schema?: any;
+  content_type: HttpContentType;
+}
+
 export type RouteReq = {
   title?: string;
-  body: {
-    content_type: HttpContentType;
-    schema?: any;
-  },
-  filter: {
-    content_type: HttpContentType;
-  },
+  body: RouteDataType;
+  search_params: Record<string, RouteDataType>;
 }
 
 export type RouteVar = Record<string, string>;
@@ -19,10 +19,7 @@ export type RouteVar = Record<string, string>;
 export type RouteRes = {
   title?: string;
   status_code: number;
-  content: {
-    content_type: HttpContentType;
-    schema?: {},
-  }
+  content: RouteDataType;
 }
 
 export type RouteConfGetter = () => [RouteReq, RouteRes];
@@ -30,8 +27,9 @@ export type RouteConfGetter = () => [RouteReq, RouteRes];
 export default class RouteConf {
   req: RouteReq;
   res: RouteRes;
-  fn?: RouteExec;
   pathname: string;
+  fn: RouteExec = () =>
+    new Promise<void>((resolve) => resolve());
 
   constructor(getter: RouteConfGetter) {
     const [req, res] = getter();
@@ -52,9 +50,7 @@ export type RouteBinder = (fn: RouteExec) => void;
 
 export function create_route(): [RouteConf, RouteBinder] {
   const route_conf = new RouteConf(() => [{
-    filter: {
-      content_type: HttpContentTypeEnum.JSON,
-    },
+    search_params: {},
     body: {
       content_type: HttpContentTypeEnum.JSON,
     }

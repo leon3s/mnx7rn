@@ -14,7 +14,6 @@ export class RootCtrl extends Ctrl {
 
   "GET /ping" = () => {
     const [route, bind_route] = create_route();
-    route.res.content.content_type = 'text/plain';
     bind_route(async () => {
       return { pong: true };
     });

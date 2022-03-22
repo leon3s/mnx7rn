@@ -6,21 +6,14 @@ import {
 import type { IncomingMessage } from "http";
 import type { HttpReqPartial } from './HttpRFC';
 
-export function parse_param_filter_json(req: HttpReqPartial) {
+export function parse_param_filter_json(key: string, req: HttpReqPartial) {
   try {
-    const filter = req.p_url.searchParams.get('filter');
+    const filter = req.p_url.searchParams.get(key);
     if (!filter) {
       req.p_sp = {};
       return;
     }
-    req.p_sp = JSON.parse(filter, function (key, value) {
-      if (!key.length && typeof value !== 'object') {
-        throw new HttpErr({
-          status_code: 400,
-        });
-      }
-      return value;
-    });
+    req.p_sp[key] = JSON.parse(filter);
   } catch (err: any) {
     throw new HttpErr({
       details: err,

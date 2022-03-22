@@ -17,8 +17,11 @@ class RootCtrl extends Ctrl {
 
   "GET /ping" = () => {
     const [route, bind_route] = create_route();
+    route.req.search_params.qs = {
+      content_type: 'application/json'
+    };
     bind_route(async (req) => {
-      return { pong: true, filter: req.p_sp };
+      return { message: "pong", qs: req.p_sp.qs };
     });
     return route;
   }
