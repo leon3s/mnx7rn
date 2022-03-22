@@ -10,9 +10,9 @@ let api: AxiosInstance;
 
 describe('[DEAMON_ROOT_CONTROLLER]', () => {
   beforeAll(() => {
-    deamon.listen(`unix://${path.join(__dirname, './test-root-deamon.socket')}`);
+    deamon.listen(`unix://${path.join(__dirname, './test-deamon-root.socket')}`);
     api = axios.create({
-      socketPath: path.join(__dirname, './test-root-deamon.socket'),
+      socketPath: path.join(__dirname, './test-deamon-root.socket'),
     });
   });
 

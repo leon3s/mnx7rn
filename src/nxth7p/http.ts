@@ -33,6 +33,10 @@ class Server {
       this.close();
     });
 
+    process.on('SIGTERM', () => {
+      this.close();
+    })
+
     process.on('exit', () => {
       this.close();
     });
@@ -51,6 +55,7 @@ class Server {
     if (!route_conf) {
       throw new HttpErr({
         status_code: 404,
+        message: `Route ${req.p_url.pathname} doesn't exist.`,
       });
     }
     if (!route_conf.fn) {
@@ -110,7 +115,11 @@ class Server {
     if (host.includes('unix://')) {
       host_ptr = host.replace('unix://', '');
     }
-    this.n_http.listen(host_ptr, this.port);
+    if (this.port) {
+      this.n_http.listen(this.port, host_ptr);
+      return;
+    }
+    this.n_http.listen(host_ptr);
   }
 }
 

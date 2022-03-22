@@ -8,16 +8,17 @@
     "rootDir": "src",
     "outDir": "./dist",
     "esModuleInterop": true,
-    "declaration": true,
+    "declaration": true
   },
   "exclude": [
     "dist",
     "test",
-    "node_modules",
+    "dev",
+    "node_modules"
   ],
   "typedocOptions": {
     "entryPoints": [
-      "./srcs/index.ts"
+      "./src/index.ts"
     ],
     "out": "docs"
   }
