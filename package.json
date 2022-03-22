@@ -13,7 +13,9 @@
     "build:watch": "tsc -w",
     "test": "jest --verbose",
     "test:deamon": "jest --verbose ./test/deamon",
-    "test:http": "jest --verbose ./test/nxth7ps",
+    "test:http": "npm run test:http:server && npm run test:http:client",
+    "test:http:server": "jest --verbose ./test/nxth7ps",
+    "test:http:client": "jest --verbose ./test/nxth7pc",
     "test:parser": "jest --verbose ./test/np4rser",
     "clean": "rm -r dist",
     "debug": "node-debug inspect ."

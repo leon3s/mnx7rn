@@ -3,7 +3,7 @@ import {
   Server,
   route_gen,
   ContentTypeEnum,
-} from '../../src/nxth7ps';
+} from '../src/nxth7ps';
 
 export const test_server = new Server();
 
