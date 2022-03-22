@@ -43,7 +43,6 @@ describe('[DEAMON_CONTAINER_CONTROLLER]', () => {
       }
     });
     container = res.data;
-    console.log({container});
     expect(container.Name).toBe('/test');
   });
 
