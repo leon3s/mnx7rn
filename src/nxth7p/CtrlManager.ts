@@ -1,18 +1,17 @@
 import {
+  Ctrl,
   HttpRes,
   HttpErr,
   HttpMethodKey,
   HttpContentTypeEnum,
  } from './HttpRFC';
 import {
-  parse_body_json,
-  parse_param_filter_json,
-} from './req_parser';
+  bind_p_sp,
+  bind_p_body,
+} from './req_bind';
 
-import type Ctrl from "./Ctrl";
-import type RouteConf from "./Route";
 import type { ServerResponse } from "http";
-import type { HttpReqPartial, HttpReqParams } from "./HttpRFC";
+import type { RouteConf, HttpReqPartial, HttpReqParams } from "./HttpRFC";
 
 class CtrlManager {
   ctrls: Ctrl[] = [];
@@ -84,13 +83,8 @@ class CtrlManager {
 
   route_before = async (req: HttpReqPartial, route_conf: RouteConf) => {
     const { req: { body, search_params } } = route_conf;
-    if (body.content_type === HttpContentTypeEnum.JSON) {
-      await parse_body_json(req);
-    }
-    await Promise.all(Object.keys(search_params).map((key) => {
-      const search_param = search_params[key];
-      parse_param_filter_json(key, req);
-    }));
+    await bind_p_body(req, body);
+    await bind_p_sp(req, search_params);
   }
 
   route_after = (route_conf: RouteConf, data: any) => {
@@ -102,7 +96,7 @@ class CtrlManager {
     return new HttpRes({
       body: res_body,
       status_code: route_conf.res.status_code,
-      content_type: route_conf.res.content.content_type,
+      content_type: route_conf.res.content.content_type || 'text/plain',
     });
   }
 

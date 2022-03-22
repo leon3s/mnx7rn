@@ -1,4 +1,5 @@
-import type { IncomingMessage } from "http";
+import type { IncomingMessage, ServerResponse } from "http";
+import {SchemaObject} from './OpenApi';
 
 /**
 * @description Supported http content_type
@@ -91,3 +92,63 @@ export class HttpRes {
     this.content_type = data.content_type;
   }
 };
+
+export type CtrlBinder = () => RouteConf;
+
+export class Ctrl {
+  path: string = '/';
+  [props: string]: CtrlBinder | any;
+
+  constructor(
+    path = '/'
+  ) {
+    this.path = path;
+  }
+};
+
+export type RouteDataType = {
+  schema?: SchemaObject;
+  content_type?: HttpContentType;
+}
+
+export type RouteReqSp = Record<string, RouteDataType>;
+
+export type RouteReq = {
+  title?: string;
+  body: RouteDataType;
+  search_params: RouteReqSp;
+}
+
+export type RouteVar = Record<string, string>;
+
+export type RouteRes = {
+  title?: string;
+  status_code: number;
+  content: RouteDataType;
+}
+
+export type RouteConfGetter = () => [RouteReq, RouteRes];
+
+export class RouteConf {
+  req: RouteReq;
+  res: RouteRes;
+  pathname: string;
+  fn: RouteExec = () =>
+    new Promise<void>((resolve) => resolve());
+
+  constructor(getter: RouteConfGetter) {
+    const [req, res] = getter();
+    this.req = req;
+    this.res = res;
+    this.pathname = '';
+  }
+
+  bind_route: RouteBinder = (fn) => {
+    this.fn = fn;
+  }
+};
+
+export type RouteExec = (req: HttpReqPartial, res: ServerResponse) =>
+  Promise<any>;
+
+export type RouteBinder = (fn: RouteExec) => void;

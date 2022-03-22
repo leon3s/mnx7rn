@@ -1,22 +1,21 @@
-import {createServer} from 'http';
 import { once } from 'events';
-
-import {
-  prepare_request,
-} from './req_parser';
+import { createServer } from 'http';
 
 import dbg from './debug';
 import { HttpErr } from './HttpRFC';
 import CtrlManager from './CtrlManager';
+import {
+  prepare_request,
+} from './req_bind';
 
 import type {
-  Server as HttpServer,
-  IncomingMessage,
   ServerResponse,
+  IncomingMessage,
+  Server as HttpServer,
 } from 'http';
-import type Ctrl from './Ctrl';
+import type {Ctrl} from './HttpRFC';
 
-class Server {
+export class Server {
   host: string = '';
   port: number = 0;
   n_http: HttpServer;
@@ -82,5 +81,3 @@ class Server {
     this.n_http.listen(host_ptr);
   }
 }
-
-export default Server;

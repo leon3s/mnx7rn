@@ -1,12 +1,15 @@
-import Server from '../../src/nxth7p';
-import Ctrl from '../../src/nxth7p/Ctrl';
-import { create_route } from '../../src/nxth7p/Route';
+import {
+  Ctrl,
+  Server,
+  route_gen,
+  ContentTypeEnum,
+} from '../../src/nxth7p';
 
 export const test_server = new Server();
 
 class RootCtrl extends Ctrl {
   "GET /" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async () => {
       return {
         name: 'test_server',
@@ -16,9 +19,17 @@ class RootCtrl extends Ctrl {
   }
 
   "GET /ping" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     route.req.search_params.qs = {
-      content_type: 'application/json'
+      content_type: 'application/json',
+      schema: {
+        type: 'object',
+        properties: {
+          message: {
+            type: "string"
+          }
+        }
+      }
     };
     bind_route(async (req) => {
       return { message: "pong", qs: req.p_sp.qs };
@@ -27,7 +38,8 @@ class RootCtrl extends Ctrl {
   }
 
   "POST /test_post" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
+    route.req.body.content_type = ContentTypeEnum.JSON;
     bind_route(async (req) => {
       return { body: req.p_body, pong: true };
     });
@@ -35,7 +47,8 @@ class RootCtrl extends Ctrl {
   }
 
   "PATCH /test_patch" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
+    route.req.body.content_type = ContentTypeEnum.JSON;
     bind_route(async (req) => {
       return { body: req.p_body, pong: true };
     });
@@ -43,7 +56,7 @@ class RootCtrl extends Ctrl {
   }
 
   "GET /{name}" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       return { pong: true, params: req.p_params };
     });
@@ -51,7 +64,7 @@ class RootCtrl extends Ctrl {
   }
 
   "GET /{name}/{test}" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       return { pong: true, params: req.p_params };
     });

@@ -1,12 +1,15 @@
-import Ctrl from "../../nxth7p/Ctrl";
-import { HttpErr } from "../../nxth7p/HttpRFC";
-import { create_route } from "../../nxth7p/Route";
+import {
+  Ctrl,
+  HttpErr,
+  route_gen,
+  ContentTypeEnum,
+} from "../../nxth7p";
 
 import {docker_service} from '../services';
 
 export class NetworkCtrl extends Ctrl {
   "GET /networks" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async () => {
       return docker_service.networks_find();
     });
@@ -14,7 +17,7 @@ export class NetworkCtrl extends Ctrl {
   }
 
   "GET /networks/{id_or_name}" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       const {id_or_name} = req.p_params;
       return docker_service
@@ -24,7 +27,8 @@ export class NetworkCtrl extends Ctrl {
   }
 
   "POST /networks" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
+    route.req.body.content_type = ContentTypeEnum.JSON;
     bind_route(async (req) => {
       try {
         const network = await docker_service.networks_create(req.p_body);
@@ -40,7 +44,7 @@ export class NetworkCtrl extends Ctrl {
   }
 
   "DELETE /networks/{id_or_name}" = () => {
-    const [route, bind_route] = create_route();
+    const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       const {id_or_name} = req.p_params;
       await docker_service.networks_delete_by_id_or_name(id_or_name);

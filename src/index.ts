@@ -23,7 +23,6 @@ const commands: Record<string, CommandFn> = {
 
 function parse_argv() {
   let count = 2;
-  console.log('hello !', argv);
   let command = null;
   while (argv[count]) {
     command = commands[argv[count]];

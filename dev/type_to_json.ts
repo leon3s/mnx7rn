@@ -30,7 +30,7 @@ function visit(node: ts.Node) {
   if (!isNodeExported(node)) {
     return;
   }
-  
+
   if (ts.isModuleDeclaration(node)) {
     console.log('IS MODULE !');
   }

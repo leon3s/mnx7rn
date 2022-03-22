@@ -6,7 +6,7 @@ import type {
   AxiosInstance,
 } from 'axios';
 import type {
-  ContainerInfo, ContainerInspectInfo,
+  ContainerInspectInfo,
 } from 'dockerode';
 
 let api: AxiosInstance;
