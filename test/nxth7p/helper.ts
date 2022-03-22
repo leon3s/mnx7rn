@@ -1,10 +1,10 @@
 import Server from '../../src/nxth7p';
-import HttpCtrl from '../../src/nxth7p/HttpCtrl';
-import { create_route } from '../../src/nxth7p/HttpRoute';
+import Ctrl from '../../src/nxth7p/Ctrl';
+import { create_route } from '../../src/nxth7p/Route';
 
 export const test_server = new Server();
 
-class RootCtrl extends HttpCtrl {
+class RootCtrl extends Ctrl {
   "GET /" = () => {
     const [route, bind_route] = create_route();
     bind_route(async () => {
@@ -18,7 +18,7 @@ class RootCtrl extends HttpCtrl {
   "GET /ping" = () => {
     const [route, bind_route] = create_route();
     bind_route(async (req) => {
-      return { pong: true, filter: req.p_filter };
+      return { pong: true, filter: req.p_sp };
     });
     return route;
   }

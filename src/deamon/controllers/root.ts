@@ -1,7 +1,7 @@
-import HttpCtrl from "../../nxth7p/HttpCtrl";
-import { create_route } from "../../nxth7p/HttpRoute";
+import Ctrl from "../../nxth7p/Ctrl";
+import { create_route } from "../../nxth7p/Route";
 
-export class RootCtrl extends HttpCtrl {
+export class RootCtrl extends Ctrl {
   "GET /" = () => {
     const [route, bind_route] = create_route();
     bind_route(async () => {
@@ -14,6 +14,7 @@ export class RootCtrl extends HttpCtrl {
 
   "GET /ping" = () => {
     const [route, bind_route] = create_route();
+    route.res.content.content_type = 'text/plain';
     bind_route(async () => {
       return { pong: true };
     });

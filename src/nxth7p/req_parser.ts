@@ -1,25 +1,19 @@
-import HttpErr from "./HttpErr";
-import HttpMd, { HttpMdKey } from './HttpMd';
+import {
+  HttpErr,
+  HttpMethodKey,
+} from './HttpRFC';
 
-import type { IncomingMessage } from "http"; 
-import type { HttpRouteVar } from "./HttpRoute";
+import type { IncomingMessage } from "http";
+import type { HttpReqPartial } from './HttpRFC';
 
-export default interface HttpReq extends IncomingMessage {
-  method: HttpMd;
-  p_body: any;
-  p_url: URL;
-  p_filter: any;
-  p_params: HttpRouteVar;
-};
-
-export function parse_param_filter_json(req: HttpReq) {
+export function parse_param_filter_json(req: HttpReqPartial) {
   try {
     const filter = req.p_url.searchParams.get('filter');
     if (!filter) {
-      req.p_filter = {};
+      req.p_sp = {};
       return;
     }
-    req.p_filter = JSON.parse(filter, function (key, value) {
+    req.p_sp = JSON.parse(filter, function (key, value) {
       if (!key.length && typeof value !== 'object') {
         throw new HttpErr({
           status_code: 400,
@@ -36,7 +30,7 @@ export function parse_param_filter_json(req: HttpReq) {
   }
 }
 
-export function parse_body_json(req: HttpReq) {
+export function parse_body_json(req: HttpReqPartial) {
   let body = '';
   return new Promise<void>((resolve, reject) => {
     if (req.complete) {
@@ -75,16 +69,16 @@ export function parse_body_json(req: HttpReq) {
   });
 }
 
-export async function parse_request(req: IncomingMessage): Promise<HttpReq> {
-  if (!req.method || !HttpMdKey.includes(req.method)) {
+export async function prepare_request(req: IncomingMessage): Promise<HttpReqPartial> {
+  const p_req = req as HttpReqPartial;
+  if (!req.method || !HttpMethodKey.includes(req.method)) {
     throw new HttpErr({
       status_code: 405,
     });
   }
-  const p_req = req as HttpReq;
+  p_req.p_sp = {};
+  p_req.p_body = '';
   const url = (req.url || '').toString();
   p_req.p_url = new URL(`unix://${url}`);
-  p_req.p_body = '';
-  p_req.p_filter = ''
   return p_req;
 }

@@ -1,3 +1,3 @@
-import http from './http';
+import Server from './Server';
 
-export default http;
+export default Server;

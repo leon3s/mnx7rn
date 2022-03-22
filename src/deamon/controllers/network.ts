@@ -1,12 +1,10 @@
-import HttpCtrl from "../../nxth7p/HttpCtrl";
-import { create_route } from "../../nxth7p/HttpRoute";
+import Ctrl from "../../nxth7p/Ctrl";
+import { HttpErr } from "../../nxth7p/HttpRFC";
+import { create_route } from "../../nxth7p/Route";
 
 import {docker_service} from '../services';
 
-import HttpErr from "../../nxth7p/HttpErr";
-import HttpContentType from "../../nxth7p/HttpContentType";
-
-export class NetworkCtrl extends HttpCtrl {
+export class NetworkCtrl extends Ctrl {
   "GET /networks" = () => {
     const [route, bind_route] = create_route();
     bind_route(async () => {
