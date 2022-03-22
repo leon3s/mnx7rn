@@ -9,7 +9,7 @@ import type {
 
 let api: AxiosInstance;
 
-describe('[NXTH7P_ERRORS]', () => {
+describe('[nxth7ps_ERRORS]', () => {
   beforeAll(() => {
     test_server.listen(`unix://${path.join(__dirname, './test-error.socket')}`);
     api = axios.create({

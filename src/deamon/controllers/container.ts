@@ -3,7 +3,7 @@ import {
   HttpErr,
   route_gen,
   ContentTypeEnum
-} from "../../nxth7p";
+} from "../../nxth7ps";
 import { docker_service } from "../services";
 
 export class ContainerCtrl extends Ctrl {

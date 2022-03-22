@@ -8,7 +8,7 @@ import type {
 
 let api: AxiosInstance;
 
-describe('[NXTH7P_ROOT_CONTROLLER]', () => {
+describe('[nxth7ps_ROOT_CONTROLLER]', () => {
   beforeAll(() => {
     test_server.listen(`unix://${path.join(__dirname, './test.socket')}`);
     api = axios.create({

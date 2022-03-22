@@ -13,7 +13,7 @@
     "build:watch": "tsc -w",
     "test": "jest --verbose",
     "test:deamon": "jest --verbose ./test/deamon",
-    "test:http": "jest --verbose ./test/nxth7p",
+    "test:http": "jest --verbose ./test/nxth7ps",
     "test:parser": "jest --verbose ./test/np4rser",
     "clean": "rm -r dist",
     "debug": "node-debug inspect ."

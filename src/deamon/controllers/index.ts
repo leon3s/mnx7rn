@@ -1,4 +1,4 @@
-import {Ctrl} from "../../nxth7p";
+import {Ctrl} from "../../nxth7ps";
 
 import { RootCtrl } from "./root";
 import { NetworkCtrl } from "./network";

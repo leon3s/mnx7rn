@@ -1,4 +1,4 @@
-import { Ctrl, route_gen } from "../../nxth7p";
+import { Ctrl, route_gen } from "../../nxth7ps";
 
 export class RootCtrl extends Ctrl {
   "GET /" = () => {

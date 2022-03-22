@@ -1,6 +1,6 @@
 import Dockerode from "dockerode";
 
-import { HttpErr } from "../../nxth7p/HttpRFC";
+import { HttpErr } from "../../nxth7ps";
 
 import type {
   ContainerInfo,
