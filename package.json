@@ -13,6 +13,7 @@
     "build:watch": "tsc -w",
     "test": "jest --verbose",
     "test:deamon": "jest --verbose ./test/deamon",
+    "test:deamon:store": "jest --verbose ./test/deamon/store.service.test.ts",
     "test:http": "npm run test:http:server && npm run test:http:client",
     "test:http:server": "jest --verbose ./test/nxth7ps",
     "test:http:client": "jest --verbose ./test/nxth7pc",

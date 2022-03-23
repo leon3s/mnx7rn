@@ -1,6 +1,5 @@
-[nx8t]
+# [nanocld]
 
-nx8t is an interface to quickly deploy any docker image
+nanocld is a cli to quickly deploy cloud
 
-# Documentation
-
+## Documentation
