@@ -1,7 +1,7 @@
 import {argv, stdout} from 'process';
-import deamon_start from './deamon_start';
+import {deamon, network} from './commands';
 
-type CommandFn = (...args: any[]) => Promise<any>;
+import type {Commands} from './args_parser';
 
 async function print_version() {
   stdout.write('nanocld version 1.0.0, build a224086\n');
@@ -22,14 +22,15 @@ async function main_print_help() {
   stdout.write('\n');
 }
 
-const commands: Record<string, CommandFn> = {
-  deamon: deamon_start,
-  '--version': print_version,
+const commands: Commands = {
+  deamon,
+  network,
   '-v': print_version,
   'version': print_version,
+  '--version': print_version,
+  '-h': main_print_help,
   'help': main_print_help,
   '--help': main_print_help,
-  '-h': main_print_help,
 }
 
 export function main() {

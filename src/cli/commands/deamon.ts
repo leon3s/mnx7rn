@@ -1,5 +1,5 @@
 import { stdout } from 'process';
-import deamon from '../deamon';
+import deamon from '../../deamon';
 
 export default async function deamon_start(host: string, port?: number) {
   let h_deamon = host || 'unix://./test.socket';

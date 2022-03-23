@@ -1,11 +1,11 @@
 {
-  "name": "nanocld",
+  "name": "@nxthat/nanocld",
   "version": "1.0.1",
   "private": false,
   "description": "",
   "main": "./dist/index.js",
   "bin": {
-    "mnx7rn": "./dist/index.js"
+    "nanocld": "./dist/index.js"
   },
   "scripts": {
     "start": "node .",

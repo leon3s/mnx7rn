@@ -12,7 +12,7 @@ const protocol_to_port: Record<string, number> = {
 type HttpClientResponse<D> = {
   data: D;
   http_version: string;
-  status_code?: number;
+  status_code: number;
   headers: IncomingHttpHeaders;
 }
 
@@ -122,8 +122,8 @@ class HttpClientRequest {
       resolve({
         data,
         headers,
-        status_code: statusCode,
         http_version: httpVersion,
+        status_code: statusCode || 0,
       });
     });
     if (this.body) {
@@ -193,6 +193,9 @@ export class HttpClient {
       return r_res;
     }
     c_req = null;
+    if (r_res.status_code >= 400 && r_res.status_code < 600) {
+      throw r_res;
+    }
     return r_res;
   }
 
