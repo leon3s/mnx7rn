@@ -1,6 +1,6 @@
 import path from 'path';
 import axios from 'axios';
-import deamon from '../../src/deamon';
+import daemon from '../../src/daemon';
 
 import type {
   AxiosInstance,
@@ -8,18 +8,19 @@ import type {
 
 let api: AxiosInstance;
 
-describe('[DEAMON_ROOT_CONTROLLER]', () => {
-  beforeAll(() => {
-    deamon.listen(`unix://${path.join(__dirname, './test-deamon-root.socket')}`);
+describe('[DAEMON_ROOT_CONTROLLER]', () => {
+  beforeAll(async () => {
+    await daemon.boot();
+    daemon.listen(`unix://${path.join(__dirname, './test-daemon-root.socket')}`);
     api = axios.create({
-      socketPath: path.join(__dirname, './test-deamon-root.socket'),
+      socketPath: path.join(__dirname, './test-daemon-root.socket'),
     });
   });
 
   it('invoke [GET /] expect 200', async () => {
     const res = await api.get('/');
     expect(res.status).toBe(200);
-    expect(res.data.name).toBe('deamon');
+    expect(res.data.name).toBe('daemon');
   });
 
   it('invoke [GET /ping] expect 200', async () => {
@@ -29,6 +30,6 @@ describe('[DEAMON_ROOT_CONTROLLER]', () => {
   });
 
   afterAll(async () => {
-    await deamon.close();
+    await daemon.close();
   });
 });

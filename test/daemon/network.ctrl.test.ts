@@ -1,7 +1,7 @@
 import path from 'path';
 import axios from 'axios';
 
-import deamon from '../../src/deamon';
+import daemon from '../../src/daemon';
 
 import type {
   AxiosInstance,
@@ -12,19 +12,18 @@ let api: AxiosInstance;
 let default_network: NetworkInspectInfo;
 let test_network: NetworkInspectInfo;
 
-describe('[DEAMON_NETWORK_CONTROLLER]', () => {
-  beforeAll(() => {
-    deamon.listen(`unix://${path.join(__dirname, './test-deamon-network.socket')}`);
+describe('[DAEMON_NETWORK_CONTROLLER]', () => {
+  beforeAll(async () => {
+    await daemon.boot();
+    daemon.listen(`unix://${path.join(__dirname, './test-daemon-network.socket')}`);
     api = axios.create({
-      socketPath: path.join(__dirname, './test-deamon-network.socket'),
+      socketPath: path.join(__dirname, './test-daemon-network.socket'),
     });
   });
 
   it('invoke [GET /networks] expect 200', async () => {
     const res = await api.get('/networks');
     expect(res.status).toBe(200);
-    // Default docker networks should be 3
-    expect(res.data.length).toBeCloseTo(3);
     const [host] = res.data;
     default_network = host;
     expect(host.Name).toBeDefined();
@@ -63,6 +62,6 @@ describe('[DEAMON_NETWORK_CONTROLLER]', () => {
   });
 
   afterAll(async () => {
-    await deamon.close();
+    await daemon.close();
   });
 });

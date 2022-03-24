@@ -1,5 +1,5 @@
 [Unit]
-Description=mnx7rn deamon
+Description=mnx7rn daemon
 Documentation=https://github.com/leon3s/mnx7rn
 After=network-online.target
 Wants=network-online.target
@@ -8,7 +8,7 @@ Wants=network-online.target
 User=root
 Group=root
 EnvironmentFile=-/etc/mnx7rn
-ExecStart=/home/leone/.npm-global/bin/mnx7rn deamon /var/run/dnxt.sock
+ExecStart=/home/leone/.npm-global/bin/mnx7rn daemon /var/run/dnxt.sock
 PIDFile=/var/run/dnxt.pid
 # file size
 LimitFSIZE=infinity

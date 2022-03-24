@@ -9,7 +9,7 @@ import type {
   ContainerCreateOptions,
 } from 'dockerode';
 
-class DockerService {
+class VeService {
   dockerode: Dockerode;
   
   constructor() {
@@ -134,4 +134,4 @@ class DockerService {
   }
 }
 
-export default DockerService;
+export default VeService;

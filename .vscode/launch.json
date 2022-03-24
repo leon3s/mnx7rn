@@ -7,12 +7,12 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "start deamon",
+      "name": "start daemon",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "program": "${workspaceFolder}/dist/index.js",
-      "args": ["deamon"]
+      "args": ["daemon"]
     }
   ]
 }

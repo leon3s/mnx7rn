@@ -5,7 +5,7 @@ export class RootCtrl extends Ctrl {
     const [route, bind_route] = route_gen();
     bind_route(async () => {
       return {
-        name: 'deamon',
+        name: 'daemon',
       }
     });
     return route;

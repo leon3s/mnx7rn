@@ -1,5 +1,5 @@
 import {argv, stdout} from 'process';
-import {deamon, network} from './commands';
+import {daemon, network} from './commands';
 
 import type {Commands} from './args_parser';
 
@@ -16,14 +16,14 @@ async function main_print_help() {
     '\nManagement Commands:\n' +
     '  network  Manage network\n'+
     '\nCommands:\n'+
-    '  deamon   Start deamon\n' +
+    '  daemon   Start daemon\n' +
     '\nTo get more help with nanocld, check out our guides at https://nanocld.nxthat.com/guides/'
   );
   stdout.write('\n');
 }
 
 const commands: Commands = {
-  deamon,
+  daemon,
   network,
   '-v': print_version,
   'version': print_version,

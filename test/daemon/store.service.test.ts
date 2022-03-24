@@ -1,6 +1,6 @@
 import path from "path";
 
-import {Store, Model, ModelItem} from '../../src/deamon/services/store';
+import Store, {Model, ModelItem} from '../../src/daemon/services/store';
 
 type ModelTest = ModelItem<{ name: string }>;
 

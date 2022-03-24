@@ -1,6 +1,6 @@
 import path from 'path';
 import axios from 'axios';
-import deamon from '../../src/deamon';
+import daemon from '../../src/daemon';
 
 import type {
   AxiosInstance,
@@ -13,11 +13,12 @@ let api: AxiosInstance;
 
 let container: ContainerInspectInfo;
 
-describe('[DEAMON_CONTAINER_CONTROLLER]', () => {
-  beforeAll(() => {
-    deamon.listen(`unix://${path.join(__dirname, './test-deamon-container.socket')}`);
+describe('[DAEMON_CONTAINER_CONTROLLER]', () => {
+  beforeAll(async () => {
+    await daemon.boot();
+    daemon.listen(`unix://${path.join(__dirname, './test-daemon-container.socket')}`);
     api = axios.create({
-      socketPath: path.join(__dirname, './test-deamon-container.socket'),
+      socketPath: path.join(__dirname, './test-daemon-container.socket'),
     });
   });
 
@@ -56,6 +57,6 @@ describe('[DEAMON_CONTAINER_CONTROLLER]', () => {
   });
 
   afterAll(async () => {
-    await deamon.close();
+    await daemon.close();
   });
 });

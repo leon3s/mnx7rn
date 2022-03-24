@@ -1,6 +1,6 @@
 import path from 'path';
-import fs_p from 'fs/promises';
 import crypto from 'crypto';
+import fs_p from 'fs/promises';
 import EventEmitter from 'events';
 
 function gen_short_id() {
@@ -83,7 +83,7 @@ export class Model<D> {
   }
 }
 
-export class Store {
+class Store {
   path: string;
   private _emitter: EventEmitter;
   models: Record<string, Model<any>> = {};
@@ -93,25 +93,17 @@ export class Store {
     this._emitter = new EventEmitter();
   };
 
-  private _mount = async () => {
+  mount = async () => {
     await fs_p.mkdir(this.path, {
       recursive: true,
     });
   }
 
-  private _umount = async () => {
+  umount = async () => {
     await fs_p.rm(this.path, {
       recursive: true,
       force: true,
     });
-  }
-  
-  mount = async () => {
-    await this._mount();
-  }
-
-  umount = async () => {
-    await this._umount();
   }
 
   model_create = <D>(name: string, schema?: any) => {
@@ -120,3 +112,5 @@ export class Store {
     return model;
   }
 };
+
+export default Store;

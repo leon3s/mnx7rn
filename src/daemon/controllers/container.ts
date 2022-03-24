@@ -4,13 +4,13 @@ import {
   route_gen,
   ContentTypeEnum
 } from "../../nxth7ps";
-import { docker_service } from "../services";
+import { ve_service } from "../services";
 
 export class ContainerCtrl extends Ctrl {
   "GET /containers" = () => {
     const [route, bind_route] = route_gen();
     bind_route(async () => {
-      return docker_service.containers_find();
+      return ve_service.containers_find();
     });
     return route;
   }
@@ -19,7 +19,7 @@ export class ContainerCtrl extends Ctrl {
     const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       const {id_or_name} = req.p_params;
-      return docker_service.containers_find_by_id_or_name(id_or_name);
+      return ve_service.containers_find_by_id_or_name(id_or_name);
     });
     return route;
   }
@@ -29,7 +29,7 @@ export class ContainerCtrl extends Ctrl {
     route.req.body.content_type = ContentTypeEnum.JSON;
     bind_route(async (req) => {
       try {
-        const container = await docker_service.containers_create(req.p_body);
+        const container = await ve_service.containers_create(req.p_body);
         return container;
       } catch (err: any) {
         throw new HttpErr({
@@ -45,7 +45,7 @@ export class ContainerCtrl extends Ctrl {
     const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       const {id_or_name} = req.p_params;
-      return docker_service.containers_delete_by_id_or_name(id_or_name);
+      return ve_service.containers_delete_by_id_or_name(id_or_name);
     });
     return route;
   }

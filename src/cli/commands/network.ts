@@ -109,8 +109,8 @@ const commands: Commands = {
       name: args_new[0],
     }).catch((err) => {
       if (err.errno === -2) {
-        stdout.write('unable to connect to deamon\n');
-        stdout.write('try nanocld deamon\n');
+        stdout.write('unable to connect to daemon\n');
+        stdout.write('try nanocld daemon\n');
       }
       stdout.write(`Error response from daemon: ${err.data.message}\n`);
       exit(1);

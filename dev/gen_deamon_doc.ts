@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import deamon from "../src/deamon";
+import daemon from "../src/daemon";
 
-const out_path = path.resolve('doc/deamon.md');
+const out_path = path.resolve('doc/daemon.md');
 
 let c_ctrl = ''
-Promise.all(deamon.ctrls.map((ctrl) => {
+Promise.all(daemon.ctrls.map((ctrl) => {
   const {name} = ctrl.constructor;
   c_ctrl += `# ${name}\n\n`;
   const routes = ctrl.get_routes();
