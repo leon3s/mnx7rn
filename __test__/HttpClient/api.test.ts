@@ -6,7 +6,7 @@ let client: HttpClient;
 
 const test_server_url = `${path.join(__dirname, './http-client.socket')}`;
 
-describe('[NXTH7PC]', () => {
+describe('[HttpClient]', () => {
   beforeAll(() => {
     test_server.listen(test_server_url);
   });

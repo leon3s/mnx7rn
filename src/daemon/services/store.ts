@@ -123,7 +123,6 @@ export class Model<D = Record<string, any>> {
         id = this.meta.props_uniq[prop][id];
       });
     }
-    console.log('find_by_id ', id);
     const file_c = await this._read_item(id || uniq);
     return file_c;
   }
@@ -152,7 +151,6 @@ export class Model<D = Record<string, any>> {
 
   update_by_id = async (id: string, data: Partial<ModelItem<D>>): Promise<ModelItem<D>> => {
     let data_ptr = await this._read_item(id);
-    const keys_u = Object.keys(data); 
     data_ptr = {
       ...data,
       ...data_ptr,

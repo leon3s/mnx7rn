@@ -30,22 +30,30 @@ class CtrlManager {
     });
   }
 
-  ctrl_match_route = (route_paths: string[], req_paths: string[]): HttpReqParams | null => {
+  ctrl_match_route = (user_paths: string[], req_paths: string[]): HttpReqParams | null => {
     let c_path = -1;
-    let curr_path: string;
+    let c_currpath = 0;
+    let req_path: string;
     const route_vars: HttpReqParams = {};
-    while (curr_path = route_paths[++c_path]) {
-      let req_path = req_paths[c_path];
-      if (curr_path.startsWith('{')) {
-        const name = curr_path.replace(/{(.*)}/gm, '$1');
+    while (req_path = req_paths[++c_path]) {
+      let user_path = user_paths[c_currpath];
+      if (!user_path) break;
+      if (user_path.startsWith('{')) {
+        const name = user_path.replace(/{(.*)}/gm, '$1');
+        if (name === '*') {
+          route_vars.all = [...(route_vars.all || []), req_path];
+          continue;
+        }
+        ++c_currpath;
         route_vars[name] = req_path;
         continue;
       }
-      if (curr_path !== req_path) {
+      if (user_path !== req_path) {
         break;
       }
+      ++c_currpath;
     }
-    if (c_path === route_paths.length && c_path === req_paths.length) {
+    if ((c_currpath === user_paths.length) && (c_path === req_paths.length)) {
       return route_vars;
     }
     return null;

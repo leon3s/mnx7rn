@@ -22,7 +22,7 @@ describe('[USER_SERVICE]', () => {
       name: 'god',
       passwd: 'god',
     });
-    console.log(key_p);
+    expect(key_p).toBeDefined();
   });
 
   it('invoke user.login with bad params', async () => {
@@ -32,6 +32,7 @@ describe('[USER_SERVICE]', () => {
     }).catch((err) => {
       expect(err.message).toBe('unauthorized.');
     });
+    expect(key_p).toBeUndefined();
   });
 
   afterAll(async () => {

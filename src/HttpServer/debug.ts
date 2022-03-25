@@ -1,3 +1,3 @@
 import util from 'util';
 
-export default util.debuglog('nxth7ps');
+export default util.debuglog('HttpServer');
