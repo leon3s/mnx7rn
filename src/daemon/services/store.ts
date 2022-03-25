@@ -1,12 +1,13 @@
 /**
  * Custom Database system
  * Why ? To have a project without any additional libraries when running in production.
- * May have so problem if we write concurently
+ * May have so problem if we write concurently ?
  */
 import path from 'path';
 import crypto from 'crypto';
-import fs_p from 'fs/promises';
+import fs_p, { writeFile } from 'fs/promises';
 import EventEmitter, {once} from 'events';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { nextTick } from 'process';
 
 function gen_short_id() {
@@ -23,6 +24,13 @@ type ModelOpts = {
   props_uniq?: string[];
 }
 
+type ModelMetaPropUniq = Record<string, string>;
+
+// Point to the ID
+type ModelMeta = {
+  props_uniq: Record<string, ModelMetaPropUniq>;
+}
+
 export type ModelItem<D = Record<string, any>> = D & {
   id: string;
 } & Record<string, any>;
@@ -32,11 +40,36 @@ export class Model<D = Record<string, any>> {
   props_uniq?: string[];
   is_writing: boolean = false;
   e: EventEmitter;
+  meta_p: string;
+  meta: ModelMeta = {
+    props_uniq: {},
+  }
 
   constructor(opts: ModelOpts) {
     this.path = opts.path;
+    this.meta_p = path.join(opts.path, 'meta.json');
     this.props_uniq = opts.props_uniq;
     this.e = new EventEmitter();
+  }
+
+  mount = async () => {
+    await fs_p.mkdir(this.path, { recursive: true });
+    await this._gen_meta();
+  }
+
+  private _gen_meta = async () => {
+    if (existsSync(this.meta_p)) {
+      this.meta = JSON.parse(readFileSync(this.meta_p, 'utf-8')) as ModelMeta;
+    } else {
+      let props_uniq: Record<string, ModelMetaPropUniq> = {};
+      if (this.props_uniq) {
+        this.props_uniq.forEach((prop) => {
+          props_uniq[prop] = {};
+        });
+      }
+      this.meta.props_uniq = props_uniq;
+      writeFileSync(this.meta_p, JSON.stringify(this.meta));
+    }
   }
 
   private _gen_item_paths = (id: string) => {
@@ -48,9 +81,11 @@ export class Model<D = Record<string, any>> {
   }
 
   private _read_item = async (id: string): Promise<ModelItem<D>> => {
-    const {data_p} = this._gen_item_paths(id);
-    const data_rp = await fs_p.realpath(data_p);
-    const file_c = await fs_p.readFile(data_rp, 'utf-8');
+    if (this.is_writing) {
+      await once(this.e, 'write_done');
+    }
+    const {dir_p} = this._gen_item_paths(id);
+    const file_c = await fs_p.readFile(path.join(dir_p, 'data.json'), 'utf-8');
     return JSON.parse(file_c) as ModelItem<D>;
   }
 
@@ -62,50 +97,15 @@ export class Model<D = Record<string, any>> {
     const { dir_p, data_p } = this._gen_item_paths(data.id);
     await fs_p.mkdir(dir_p, { recursive: true });
     await fs_p.writeFile(data_p, JSON.stringify(data));
-    this.is_writing = false;
     await new Promise<void>((resolve) =>
       nextTick(() => resolve()));
+    this.is_writing = false;
     this.e.emit('write_done');
-  }
-
-  private _is_link = async (link_p: string) => {
-    return new Promise((resolve, reject) => {
-      fs_p.lstat(link_p).then(() =>
-        resolve(true)
-      ).catch((err) => {
-        return resolve(false);
-      })
-    });
-  }
-
-  private _link_exist = async (link_p: string) => {
-    return new Promise<boolean>((resolve, reject) => {
-      fs_p.lstat(link_p).then(() =>
-        resolve(true)
-      ).catch((err) => {
-        if (err.code === 'ENOENT') {
-          return resolve(false);
-        }
-        return reject(err);
-      });
-    });
-  }
-
-  private _save_link = async (data: ModelItem<D>, key: string) => {
-    const {dir_p} = this._gen_item_paths(data.id);
-    const link_p = path.join(this.path, data[key]);
-    const link_exists = await this._link_exist(link_p);
-    if (link_exists) {
-      throw new Error(`${key} is not uniq`);
-    }
-    await fs_p.symlink(dir_p, link_p);
   }
 
   find = async (): Promise<ModelItem<D>[]> => {
     let ids = await fs_p.readdir(this.path);
     let items = await Promise.all(ids.map(async (id) => {
-      const is_link = await this._is_link(id);
-      if (!is_link) return null;
       const item = await this._read_item(id);
       return item;
     }));
@@ -113,11 +113,19 @@ export class Model<D = Record<string, any>> {
     return items as ModelItem<D>[];
   }
 
-  find_by_id = async (id: string): Promise<ModelItem<D>> => {
-    const {data_p} = this._gen_item_paths(id);
-    const file_c = await fs_p.readFile(data_p, 'utf-8');
-    const model = JSON.parse(file_c);
-    return model;
+  find_by_id = async (uniq: string): Promise<ModelItem<D>> => {
+    if (this.is_writing) {
+      await once(this.e, 'write_done');
+    }
+    let id = uniq;
+    if (this.props_uniq) {
+      this.props_uniq.forEach((prop) => {
+        id = this.meta.props_uniq[prop][id];
+      });
+    }
+    console.log('find_by_id ', id);
+    const file_c = await this._read_item(id || uniq);
+    return file_c;
   }
 
   create = async (data: Partial<ModelItem<D>>): Promise<ModelItem<D>> => {
@@ -125,19 +133,26 @@ export class Model<D = Record<string, any>> {
       ...data,
       id: gen_id(),
     } as ModelItem<D>;
-    await this._save_item(data_c);
     if (this.props_uniq) {
-      await Promise.all(this.props_uniq.map((prop) => {
-        return this._save_link(data_c, prop);
-      }));
+      const new_uniq_props = this.props_uniq.reduce((acc: Record<string, ModelMetaPropUniq>, prop) => {
+        if (this.meta.props_uniq[prop][data_c[prop]]) {
+          throw new Error(`${prop} already used.`);
+        }
+        acc[prop] = {
+          [data_c[prop]]: data_c.id,
+        }
+        return acc;
+      }, {});
+      this.meta.props_uniq = new_uniq_props;
+      await writeFile(this.meta_p, JSON.stringify(this.meta));
     }
+    await this._save_item(data_c);
     return data_c;
   }
 
   update_by_id = async (id: string, data: Partial<ModelItem<D>>): Promise<ModelItem<D>> => {
     let data_ptr = await this._read_item(id);
-    const keys_u = Object.keys(data);
-    
+    const keys_u = Object.keys(data); 
     data_ptr = {
       ...data,
       ...data_ptr,
@@ -167,6 +182,10 @@ class Store {
     await fs_p.mkdir(this.path, {
       recursive: true,
     });
+    await Promise.all(Object.keys(this.models).map(async (key) => {
+      const model = this.models[key];
+      await model.mount();
+    }));
   }
 
   umount = async () => {

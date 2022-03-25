@@ -1,4 +1,4 @@
-import {Server} from '../nxth7ps';
+import {Server} from '../HttpServer';
 import controllers from './controllers';
 import {store} from './services';
 
@@ -30,6 +30,6 @@ class Daemon {
   }
 }
 
-const daemon = new Daemon();
+const deamon = new Daemon();
 
-export default daemon;
+export default deamon;

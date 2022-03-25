@@ -2,7 +2,7 @@ import {
   exit,
   stdout,
 } from 'process';
-import { HttpClient } from '../../nxth7pc';
+import { HttpClient } from '../../HttpClient';
 
 import args_parser from '../args_parser';
 

@@ -14,6 +14,7 @@ import type {
   Server as HttpServer,
 } from 'http';
 import type {Ctrl} from './HttpRFC';
+import { exit } from 'process';
 
 export class Server {
   host: string = '';
@@ -28,7 +29,7 @@ export class Server {
   }
 
   private _watch_exit = () => {
-    process.on('SIGINT', () => {
+    process.on('SIGINT', (e) => {
       this.close();
     });
 
@@ -47,14 +48,15 @@ export class Server {
       return this.c_manager.process_route(p_req, res);
     }).then((p_res) => {
       dbg('responding request [%s] %o', req.url, p_res);
+      if (!p_res) return;
       res.statusCode = p_res.status_code || 200;
       res.setHeader('Content-Type', p_res.content_type || 'application/json');
       res.end(p_res.body);
-    }).catch((err: HttpErr) => {
+    }).catch((err: HttpErr | any) => {
       dbg("error request [%s] [%o]", req.url, err);
       res.statusCode = err.status_code || 500;
       res.setHeader('Content-Type', 'application/json');
-      res.end(err.body);
+      res.end(err.body || { message: err.message });
     });
   }
 

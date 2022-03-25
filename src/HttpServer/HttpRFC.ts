@@ -83,6 +83,7 @@ export class HttpErr {
  */
 export class HttpRes {
   body: string;
+  is_stream?: boolean;
   status_code: number;
   content_type: string;
 
@@ -125,6 +126,7 @@ export type RouteRes = {
   title?: string;
   status_code: number;
   content: RouteDataType;
+  is_stream?: boolean;
 }
 
 export type RouteConfGetter = () => [RouteReq, RouteRes];

@@ -1,5 +1,5 @@
 import path from 'path';
-import {HttpClient} from '../../src/nxth7pc';
+import {HttpClient} from '../../src/HttpClient';
 import { test_server } from '../server_gen';
 
 let client: HttpClient;

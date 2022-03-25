@@ -1,4 +1,3 @@
-import {spawn} from 'child_process';
 import Store from './store';
 import type {Model} from './store';
 
@@ -9,6 +8,9 @@ export interface VmModel {
   processor_type?: 'x86_64' | 'i386';
 }
 
+/**
+ * Virtual machine
+ */
 class VmService {
   store: Store;
   model: Model<VmModel>;
@@ -25,7 +27,6 @@ class VmService {
   }
 
   start = (id_or_name: string) => {
-    // spawn()
   }
 }
 
