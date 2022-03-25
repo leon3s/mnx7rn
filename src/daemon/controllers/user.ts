@@ -1,14 +1,20 @@
 import { Ctrl, route_gen } from "../../lib/HttpServer";
 import { HttpContentTypeEnum } from "../../lib/HttpServer/HttpRFC";
+import { middleware_auth } from "../middlewares";
 
 import { user_service } from "../services";
 
 export default class UserCtrl extends Ctrl {
-  "POST /users" = () => {
-
+  "GET /users/whoami" = () => {
+    const [route, bind_route] = route_gen();
+    route.req.middlewares.push(middleware_auth);
+    bind_route(async (req) => {
+      return {};
+    });
+    return route;
   }
 
-  "GET /users/login" = () => {
+  "POST /users/login" = () => {
     const [route, bind_route] = route_gen();
     route.req.body.content_type = HttpContentTypeEnum.JSON;
     route.req.body.schema = {

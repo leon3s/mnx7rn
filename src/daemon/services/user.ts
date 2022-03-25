@@ -26,7 +26,7 @@ class UserService {
     });
   }
 
-  create = async (data: Partial<User>) => {
+  create = async (data: Partial<User>): Promise<User> => {
     if (!data.passwd) {
       throw new Error(`passwd is required.`);
     }
@@ -37,6 +37,7 @@ class UserService {
     const pub_p = path.join(this.model.path, user.id, 'pub.pem');
     await writeFile(priv_p, private_key);
     await writeFile(pub_p, public_key);
+    return user;
   }
 
   login  = async (data: Partial<User>) => {
