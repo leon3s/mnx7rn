@@ -1,9 +1,13 @@
+import type Store from "./store";
+
 /**
  * Virtual environement
  */
 class VeService {
-  
-  constructor() {
+  store: Store
+
+  constructor(store: Store) {
+    this.store = store;
   }
 }
 

@@ -110,6 +110,9 @@ export class Ctrl {
   }
 };
 
+export type RouteMiddleWareRunner = (req: HttpReqPartial, res: ServerResponse) => Promise<void>;
+export type RouteMiddlewareConfig = (route_conf: RouteConf) => Promise<RouteMiddleWareRunner>;
+
 export type RouteDataType = {
   schema?: SchemaObject;
   content_type?: HttpContentType;
@@ -122,6 +125,7 @@ export type RouteReq = {
   body: RouteDataType;
   status_code?: number;
   search_params: RouteReqSp;
+  middlewares: RouteMiddlewareConfig[];
 }
 
 export type RouteVar = Record<string, string>;
@@ -139,6 +143,7 @@ export class RouteConf {
   req: RouteReq;
   res: RouteRes;
   pathname: string;
+
   fn: RouteExec = () =>
     new Promise<void>((resolve) => resolve());
 

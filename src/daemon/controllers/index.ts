@@ -1,10 +1,12 @@
 import {Ctrl} from "../../HttpServer";
 
-import RootCtrl from "./root";
+import UserCtrl from './user';
+import DebugCtrl from "./debug";
 import NetworkCtrl from "./network";
 
 const controllers: Record<string, InstanceType<typeof Ctrl>> = {
-  root_ctrl: new RootCtrl(),
+  user_ctrl: new UserCtrl(),
+  debug_ctrl: new DebugCtrl(),
   network_ctrl: new NetworkCtrl(),
 };
 

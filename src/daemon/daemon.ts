@@ -30,6 +30,6 @@ class Daemon {
   }
 }
 
-const deamon = new Daemon();
+const daemon = new Daemon();
 
-export default deamon;
+export default daemon;

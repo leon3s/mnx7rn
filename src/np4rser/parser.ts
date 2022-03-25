@@ -2,10 +2,25 @@ import fs from 'fs';
 import vm from 'vm';
 import path from 'path';
 
+export class Host {
+  host_ip: string = '';
+  host_name: string = '';
+  socket_path: string = './test-socket.sock';
+  constructor() {};
+}
+
+export class Network {
+  host: string = '';
+  host_name: string = '';
+  is_existing: boolean = false;
+  constructor() {};
+}
+
 class FileContext {
   name: string;
   path: string;
   content: string;
+  hosts: Host[] = [];
   networks: Network[] = [];
   ctx_vm: Record<string, any> = {};
 
@@ -17,11 +32,16 @@ class FileContext {
     this.name = path.basename(p_file);
     this.content = c_file;
     this.ctx_vm = {
-      ntwk_ex: this.ntwk_ex,
+      host: this.host,
       ntwk: this.ntwk,
     }
     vm.createContext(this.ctx_vm);
   };
+
+  host = (H: typeof Host) => {
+    const h = new H();
+    this.hosts.push(h);
+  }
 
   ntwk = (N: typeof Network) => {
     const n = new N();
@@ -32,24 +52,6 @@ class FileContext {
       throw new Error(`Error in file ${this.name} network ${n.constructor.name} ${e.message}`);
     }
   }
-
-  ntwk_ex = (N: typeof Network) => {
-    const n = new N();
-    try {
-      n.is_existing = true;
-      verify_network(n);
-      this.networks.push(n);
-    } catch (e: any) {
-      throw new Error(`Error in file ${this.name} network ${n.constructor.name} ${e.message}`);
-    }
-  }
-}
-
-export class Network {
-  host: string = '';
-  host_name: string = '';
-  is_existing: boolean = false;
-  constructor() {};
 }
 
 function verify_network(n: Network) {

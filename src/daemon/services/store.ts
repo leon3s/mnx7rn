@@ -10,6 +10,14 @@ import EventEmitter, {once} from 'events';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { nextTick } from 'process';
 
+async function protectTraversing(basePath: string, wantedPath: string) {
+  const p = path.resolve(path.join(basePath, wantedPath));
+  if (!p.includes(basePath)) {
+    throw new Error('Error trying to write ouside of autorized directory.');
+  }
+  return p;
+}
+
 function gen_short_id() {
   return crypto.randomBytes(2).toString('hex').toLowerCase();
 }
@@ -85,16 +93,22 @@ export class Model<D = Record<string, any>> {
       await once(this.e, 'write_done');
     }
     const {dir_p} = this._gen_item_paths(id);
+    await protectTraversing(this.path, dir_p);
     const file_c = await fs_p.readFile(path.join(dir_p, 'data.json'), 'utf-8');
     return JSON.parse(file_c) as ModelItem<D>;
   }
 
-  private _save_item = async (data: ModelItem<D>) => {
+  private _write_item = async (data: ModelItem<D>) => {
     if (this.is_writing) {
       await once(this.e, 'write_done');
     }
     this.is_writing = true;
     const { dir_p, data_p } = this._gen_item_paths(data.id);
+    await protectTraversing(this.path, dir_p).catch((err) => {
+      this.is_writing = false;
+      this.e.emit('write_done');
+      throw err;
+    });
     await fs_p.mkdir(dir_p, { recursive: true });
     await fs_p.writeFile(data_p, JSON.stringify(data));
     await new Promise<void>((resolve) =>
@@ -142,7 +156,7 @@ export class Model<D = Record<string, any>> {
       this.meta.props_uniq = new_uniq_props;
       await writeFile(this.meta_p, JSON.stringify(this.meta));
     }
-    await this._save_item(data_c);
+    await this._write_item(data_c);
     return data_c;
   }
 
@@ -152,7 +166,7 @@ export class Model<D = Record<string, any>> {
       ...data,
       ...data_ptr,
     }
-    await this._save_item(data_ptr);
+    await this._write_item(data_ptr);
     return data_ptr;
   }
 

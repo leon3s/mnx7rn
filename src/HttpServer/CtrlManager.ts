@@ -11,13 +11,10 @@ import {
 } from './req_bind';
 
 import type { ServerResponse } from "http";
-import type { RouteConf, HttpReqPartial, HttpReqParams } from "./HttpRFC";
+import type { RouteConf, RouteMiddlewareConfig, HttpReqPartial, HttpReqParams } from "./HttpRFC";
 
 class CtrlManager {
   ctrls: Record<string, Ctrl | null> = {};
-
-  constructor() {
-  }
 
   add = (ctrl: Ctrl) => {
     this.ctrls[ctrl.constructor.name] = ctrl;
@@ -95,13 +92,19 @@ class CtrlManager {
     return route_conf;
   }
 
-  route_before = async (req: HttpReqPartial, route_conf: RouteConf) => {
-    const { req: { body, search_params } } = route_conf;
+  route_before = async (route_conf: RouteConf, req: HttpReqPartial, res: ServerResponse) => {
+    const { req: { body, search_params, middlewares } } = route_conf;
     await bind_p_body(req, body);
     await bind_p_sp(req, search_params);
+    let count = -1;
+    let middleware: RouteMiddlewareConfig | null = null;
+    while (middleware = middlewares[++count]) {
+      const apply = await middleware(route_conf);
+      await apply(req, res);
+    }
   }
 
-  route_after = (route_conf: RouteConf, data: any) => {
+  route_after = (route_conf: RouteConf, {}: HttpReqPartial, {}: ServerResponse, data: any) => {
     let res_body = data;
     const {res: {content, is_stream}} = route_conf;
     if (is_stream) {
@@ -141,9 +144,9 @@ class CtrlManager {
       }
     }
     route_conf = this.route_conf_verify(req, route_conf);
-    await this.route_before(req, route_conf);
+    await this.route_before(route_conf, req, res);
     const data = await route_conf.fn(req, res);
-    return this.route_after(route_conf, data);
+    return this.route_after(route_conf, req, res, data);
   }
 }
 

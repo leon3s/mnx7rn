@@ -6,9 +6,9 @@ nanocld is a cli to quickly deploy cloud or virtualize could
 
 [installation](/README.md#installation)
 
-[cli](/doc/daemon.md "Deamon documentation")
+[cli](/doc/cli.md "cli documentation")
 
-[daemon](/doc/daemon.md "Deamon documentation")
+[daemon](/doc/daemon.md "daemon documentation")
 
 ## Installation
 

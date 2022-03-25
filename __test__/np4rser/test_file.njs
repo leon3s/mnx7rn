@@ -1,11 +1,6 @@
-ntwk_ex(class Dev {
-  host = '127.0.0.1'
-  host_name = 'dev.local';
-});
-
-ntwk_ex(class Docker {
-  host = '172.17.0.1';
-  host_name = 'docker.local';
+host(class MainHost {
+  host_name = 'nanocld.main';
+  socket_path = './test.sock';
 });
 
 ntwk(class Test {

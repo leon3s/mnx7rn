@@ -9,6 +9,7 @@ export default function route_gen(): [RouteConf, RouteBinder] {
   const route_conf = new RouteConf(() => [{
     body: {},
     search_params: {},
+    middlewares: [],
   }, {
     status_code: 200,
     content: {
