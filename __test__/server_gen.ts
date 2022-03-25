@@ -3,7 +3,7 @@ import {
   Server,
   route_gen,
   ContentTypeEnum,
-} from '../src/nxth7ps';
+} from '../src/HttpServer';
 
 export const test_server = new Server();
 
@@ -40,6 +40,7 @@ class RootCtrl extends Ctrl {
   "POST /test_post" = () => {
     const [route, bind_route] = route_gen();
     route.req.body.content_type = ContentTypeEnum.JSON;
+    route.res.status_code = 201;
     bind_route(async (req) => {
       return { body: req.p_body, pong: true };
     });
@@ -59,6 +60,14 @@ class RootCtrl extends Ctrl {
     const [route, bind_route] = route_gen();
     bind_route(async (req) => {
       return { pong: true, params: req.p_params };
+    });
+    return route;
+  }
+
+  "GET /files/{*}" = () => {
+    const [route, bind_route] = route_gen();
+    bind_route(async (req) => {
+      return { message: 'gg' };
     });
     return route;
   }

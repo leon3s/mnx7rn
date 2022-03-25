@@ -40,7 +40,10 @@ export const HttpMethodEnum: Record<string, HttpMethod> = {
 */
 export const HttpMethodKey = Object.keys(HttpMethodEnum);
 
-export type HttpReqParams = Record<string, string>;
+export type HttpReqParams = Omit<Record<string, string>, 'all'> & {
+  all?: string[];
+};
+
 export type HttpReqSearchParams = Record<string, any>;
 export type HttpReqBody = any | any[];
 
@@ -83,6 +86,7 @@ export class HttpErr {
  */
 export class HttpRes {
   body: string;
+  is_stream?: boolean;
   status_code: number;
   content_type: string;
 
@@ -116,6 +120,7 @@ export type RouteReqSp = Record<string, RouteDataType>;
 export type RouteReq = {
   title?: string;
   body: RouteDataType;
+  status_code?: number;
   search_params: RouteReqSp;
 }
 
@@ -125,6 +130,7 @@ export type RouteRes = {
   title?: string;
   status_code: number;
   content: RouteDataType;
+  is_stream?: boolean;
 }
 
 export type RouteConfGetter = () => [RouteReq, RouteRes];

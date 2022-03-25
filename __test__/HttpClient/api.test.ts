@@ -1,12 +1,12 @@
 import path from 'path';
-import {HttpClient} from '../../src/nxth7pc';
+import {HttpClient} from '../../src/HttpClient';
 import { test_server } from '../server_gen';
 
 let client: HttpClient;
 
 const test_server_url = `${path.join(__dirname, './http-client.socket')}`;
 
-describe('[NXTH7PC]', () => {
+describe('[HttpClient]', () => {
   beforeAll(() => {
     test_server.listen(test_server_url);
   });

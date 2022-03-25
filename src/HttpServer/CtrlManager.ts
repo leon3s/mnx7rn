@@ -14,10 +14,13 @@ import type { ServerResponse } from "http";
 import type { RouteConf, HttpReqPartial, HttpReqParams } from "./HttpRFC";
 
 class CtrlManager {
-  ctrls: Ctrl[] = [];
+  ctrls: Record<string, Ctrl | null> = {};
+
+  constructor() {
+  }
 
   add = (ctrl: Ctrl) => {
-    this.ctrls.push(ctrl);
+    this.ctrls[ctrl.constructor.name] = ctrl;
   }
 
   ex_url_path = (s: string) => {
@@ -27,22 +30,30 @@ class CtrlManager {
     });
   }
 
-  ctrl_match_route = (route_paths: string[], req_paths: string[]): HttpReqParams | null => {
+  ctrl_match_route = (user_paths: string[], req_paths: string[]): HttpReqParams | null => {
     let c_path = -1;
-    let curr_path: string;
+    let c_currpath = 0;
+    let req_path: string;
     const route_vars: HttpReqParams = {};
-    while (curr_path = route_paths[++c_path]) {
-      let req_path = req_paths[c_path];
-      if (curr_path.startsWith('{')) {
-        const name = curr_path.replace(/{(.*)}/gm, '$1');
+    while (req_path = req_paths[++c_path]) {
+      let user_path = user_paths[c_currpath];
+      if (!user_path) break;
+      if (user_path.startsWith('{')) {
+        const name = user_path.replace(/{(.*)}/gm, '$1');
+        if (name === '*') {
+          route_vars.all = [...(route_vars.all || []), req_path];
+          continue;
+        }
+        ++c_currpath;
         route_vars[name] = req_path;
         continue;
       }
-      if (curr_path !== req_path) {
+      if (user_path !== req_path) {
         break;
       }
+      ++c_currpath;
     }
-    if (c_path === route_paths.length && c_path === req_paths.length) {
+    if ((c_currpath === user_paths.length) && (c_path === req_paths.length)) {
       return route_vars;
     }
     return null;
@@ -89,7 +100,10 @@ class CtrlManager {
 
   route_after = (route_conf: RouteConf, data: any) => {
     let res_body = data;
-    const {res: {content}} = route_conf;
+    const {res: {content, is_stream}} = route_conf;
+    if (is_stream) {
+      return null;
+    }
     if (content.content_type === HttpContentTypeEnum.JSON) {
       res_body = JSON.stringify(data);
     }
@@ -110,11 +124,14 @@ class CtrlManager {
     return route_conf;
   }
 
-  process_route = async (req: HttpReqPartial, res: ServerResponse): Promise<HttpRes> => {
+  process_route = async (req: HttpReqPartial, res: ServerResponse): Promise<HttpRes|null> => {
     let count = -1;
-    let ctrl: Ctrl;
+    let ctrl_name: string;
     let route_conf: RouteConf | null = null;
-    while (ctrl = this.ctrls[++count]) {
+    const ctrl_names = Object.keys(this.ctrls);
+    while (ctrl_name = ctrl_names[++count]) {
+      const ctrl: Ctrl|null = this.ctrls[ctrl_name];
+      if (!ctrl) continue;
       route_conf = this.route_conf_find(ctrl, req);
       if (route_conf) {
         break;

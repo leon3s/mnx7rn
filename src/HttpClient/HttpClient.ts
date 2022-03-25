@@ -13,6 +13,7 @@ type HttpClientResponse<D> = {
   data: D;
   http_version: string;
   status_code: number;
+  stream: https.IncomingMessage;
   headers: IncomingHttpHeaders;
 }
 
@@ -20,6 +21,7 @@ type HttpClientRequestArg = {
   url: string;
   method: string;
   sp?: SearchParams;
+  is_stream?: boolean;
   headers?: IncomingHttpHeaders;
   socket_path?: string;
 }
@@ -30,6 +32,7 @@ class HttpClientRequest {
   socket_path?: string;
   c_req: ClientRequest;
   r_res?: IncomingMessage;
+  is_stream?: boolean;
   emitter = new EventEmitter();
   body?: any;
 
@@ -38,6 +41,7 @@ class HttpClientRequest {
     this.body = body;
     this.method = method;
     this.socket_path = socket_path;
+    this.is_stream = arg.is_stream;
     if (!socket_path) {
       this.p_url = new URL(url);
     } else {
@@ -77,6 +81,9 @@ class HttpClientRequest {
 
   private _res_handler = (res: IncomingMessage) => {
     this.r_res = res;
+    if (this.is_stream) {
+      return;
+    }
     let r_b_res: Buffer = Buffer.from([]);
     res.on('data', (data: Buffer) => {
       r_b_res = Buffer.concat([r_b_res, data]);
@@ -104,33 +111,52 @@ class HttpClientRequest {
     return data;
   }
 
-  process = async <D>(): Promise<HttpClientResponse<D>> =>
-  new Promise((resolve, reject) => {
-    this.emitter.once('error', reject);
-    this.emitter.once('fullfiled', (r_b_res: Buffer) => {
-      if (!this.r_res) {
-        return reject({
-          message: 'Unexpected error',
+  process = <D>(): Promise<HttpClientResponse<D>> => {
+    let res: https.ClientRequest;
+    return new Promise((resolve, reject) => {
+      this.c_req.on('response', (res) => {
+        if (this.is_stream && this.r_res) {
+          const {
+            headers,
+            statusCode,
+            httpVersion,
+          } = this.r_res;
+          return resolve({
+            data: {} as D,
+            stream: res,
+            headers,
+            http_version: httpVersion,
+            status_code: statusCode || 0,
+          });
+        }
+      })
+      this.emitter.once('error', reject);
+      this.emitter.once('fullfiled', (r_b_res: Buffer) => {
+        if (!this.r_res) {
+          return reject({
+            message: 'Unexpected error',
+          });
+        }
+        const {
+          headers,
+          statusCode,
+          httpVersion,
+        } = this.r_res;
+        const data = this._data_format(r_b_res, headers['content-type']);
+        resolve({
+          data,
+          stream: this.r_res,
+          headers,
+          http_version: httpVersion,
+          status_code: statusCode || 0,
         });
-      }
-      const {
-        headers,
-        statusCode,
-        httpVersion,
-      } = this.r_res;
-      const data = this._data_format(r_b_res, headers['content-type']);
-      resolve({
-        data,
-        headers,
-        http_version: httpVersion,
-        status_code: statusCode || 0,
       });
+      if (this.body) {
+        this.c_req.write(JSON.stringify(this.body));
+      }
+      res = this.c_req.end();
     });
-    if (this.body) {
-      this.c_req.write(JSON.stringify(this.body));
-    }
-    this.c_req.end();
-  });
+  }
 }
 
 type HttpClientArg = {
@@ -142,6 +168,7 @@ type HttpClientArg = {
 type HttpClientOpts = {
   sp?: Record<string, any>;
   socket_path?: string;
+  is_stream?: boolean;
   headers?: IncomingHttpHeaders;
 }
 

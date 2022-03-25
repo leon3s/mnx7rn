@@ -1,6 +1,6 @@
-import { Ctrl, route_gen } from "../../nxth7ps";
+import { Ctrl, route_gen } from "../../HttpServer";
 
-export class RootCtrl extends Ctrl {
+export default class DebugCtrl extends Ctrl {
   "GET /" = () => {
     const [route, bind_route] = route_gen();
     bind_route(async () => {

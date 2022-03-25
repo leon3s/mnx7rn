@@ -12,7 +12,7 @@
   },
   "exclude": [
     "dist",
-    "test",
+    "__test__",
     "dev",
     "node_modules"
   ]

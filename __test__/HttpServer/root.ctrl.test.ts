@@ -8,7 +8,7 @@ import type {
 
 let api: AxiosInstance;
 
-describe('[nxth7ps_ROOT_CONTROLLER]', () => {
+describe('[HttpServer_ROOT_CONTROLLER]', () => {
   beforeAll(() => {
     test_server.listen(`unix://${path.join(__dirname, './test.socket')}`);
     api = axios.create({
@@ -92,6 +92,13 @@ describe('[nxth7ps_ROOT_CONTROLLER]', () => {
       },
       pong: true,
     });
+  });
+
+  it('invoke [GET /{name}/{test}/titi/toto] expect 404', async () => {
+    const res = await api.get('/toto/tata/titi/toto').catch((err: any) => {
+     expect(err.response.status).toBe(404);
+    });
+    expect(res).toBeUndefined();
   });
 
   afterAll(async () => {
