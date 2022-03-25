@@ -42,16 +42,19 @@ class CtrlManager {
         const name = user_path.replace(/{(.*)}/gm, '$1');
         if (name === '*') {
           route_vars.all = [...(route_vars.all || []), req_path];
+          if (!req_paths[c_path + 1]) {
+            ++c_currpath;
+          }
           continue;
         }
-        ++c_currpath;
+        ++c_currpath
         route_vars[name] = req_path;
         continue;
       }
       if (user_path !== req_path) {
         break;
       }
-      ++c_currpath;
+      ++c_currpath
     }
     if ((c_currpath === user_paths.length) && (c_path === req_paths.length)) {
       return route_vars;

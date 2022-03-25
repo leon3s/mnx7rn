@@ -1,6 +1,6 @@
 import path from 'path';
 import {HttpClient} from '../../src/HttpClient';
-import { test_server } from '../server_gen';
+import {test_server} from '../server_gen';
 
 let client: HttpClient;
 
@@ -58,7 +58,7 @@ describe('[HttpClient]', () => {
     }>('/test_post', {
       message: "ping",
     });
-    expect(res.status_code).toBe(200);
+    expect(res.status_code).toBe(201);
     expect(res.data).toBeDefined();
     expect(res.data.pong).toBe(true);
     expect(res.data.body.message).toBe('ping')
@@ -71,7 +71,7 @@ describe('[HttpClient]', () => {
     }>('/test_patch', {
       message: "ping",
     });
-    expect(res.status_code).toBe(200);
+    expect(res.status_code).toBe(203);
     expect(res.data).toBeDefined();
     expect(res.data.pong).toBe(true);
     expect(res.data.body.message).toBe('ping')

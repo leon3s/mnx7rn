@@ -114,9 +114,6 @@ export class Model<D = Record<string, any>> {
   }
 
   find_by_id = async (uniq: string): Promise<ModelItem<D>> => {
-    if (this.is_writing) {
-      await once(this.e, 'write_done');
-    }
     let id = uniq;
     if (this.props_uniq) {
       this.props_uniq.forEach((prop) => {

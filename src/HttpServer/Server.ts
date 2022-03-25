@@ -14,7 +14,6 @@ import type {
   Server as HttpServer,
 } from 'http';
 import type {Ctrl} from './HttpRFC';
-import { exit } from 'process';
 
 export class Server {
   host: string = '';
@@ -24,22 +23,7 @@ export class Server {
 
   constructor() {
     this.n_http = createServer(this._req_hander);
-    this._watch_exit();
     this.c_manager = new CtrlManager();
-  }
-
-  private _watch_exit = () => {
-    process.on('SIGINT', (e) => {
-      this.close();
-    });
-
-    process.on('SIGTERM', () => {
-      this.close();
-    })
-
-    process.on('exit', () => {
-      this.close();
-    });
   }
 
   private _req_hander = (req: IncomingMessage, res: ServerResponse) => {

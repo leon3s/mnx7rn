@@ -49,7 +49,7 @@ describe('[HttpServer_ROOT_CONTROLLER]', () => {
     const res = await api.post('/test_post', {
       ping: true,
     });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
     expect(res.data).toStrictEqual({
       body: {
         ping: true,
@@ -62,7 +62,7 @@ describe('[HttpServer_ROOT_CONTROLLER]', () => {
     const res = await api.patch('/test_patch', {
       ping: true,
     });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(203);
     expect(res.data).toStrictEqual({
       body: {
         ping: true,
@@ -99,6 +99,11 @@ describe('[HttpServer_ROOT_CONTROLLER]', () => {
      expect(err.response.status).toBe(404);
     });
     expect(res).toBeUndefined();
+  });
+
+  it('invoke [GET /files/test_dir/test_file.txt]', async () => {
+    const res = await api.get('/files/test_dir/test_file.txt');
+    expect(res.status).toBe(200);
   });
 
   afterAll(async () => {

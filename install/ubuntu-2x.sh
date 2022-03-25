@@ -16,10 +16,10 @@ apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io
 apt-get install -y qemu qemu-kvm
 
-curl https://nodejs.org/dist/v16.13.0/node-v16.13.0-linux-x64.tar.xz _node.tar -s -o ./_node.tar > /dev/null
+curl https://nodejs.org/dist/v16.14.2/node-v16.14.2-linux-x64.tar.xz _node.tar -s -o ./_node.tar > /dev/null
 tar -xf _node.tar
-cd ./node-v16.13.0-linux-x64/
+cd ./node-v16.14.2-linux-x64/
 cp -r ./lib ./include ./share ./bin /usr
 cd ..
-rm -r node-v16.13.0-linux-x64
+rm -r ./node-v16.14.2-linux-x64/
 rm _node.tar
