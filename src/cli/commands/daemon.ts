@@ -3,6 +3,7 @@ import daemon from '../../daemon';
 
 export default async function daemon_start(host: string, port?: number) {
   let h_daemon = host || 'unix://./test.socket';
+  await daemon.boot();
   daemon.listen(h_daemon, +(port || 0) || undefined);
   let d_listen = h_daemon;
   if (port) {

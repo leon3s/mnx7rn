@@ -16,7 +16,7 @@ class VmService {
   constructor(store: Store) {
     this.store = store;
     this.model = store.model_create<VmModel>('vm', {
-      unique: ['name'],
+      props_uniq: ['name'],
     });
   }
 

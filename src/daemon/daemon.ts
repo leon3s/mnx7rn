@@ -4,6 +4,7 @@ import {store} from './services';
 
 class Daemon {
   daemon: Server;
+
   constructor() {
     this.daemon = new Server();
   }

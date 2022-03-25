@@ -2,7 +2,10 @@ import path from "path";
 
 import Store, {Model, ModelItem} from '../../src/daemon/services/store';
 
-type ModelTest = ModelItem<{ name: string }>;
+type ModelTest = ModelItem<{
+  name: string,
+  data?: any;
+}>;
 
 let store: Store;
 let model_test: Model<ModelTest>;
@@ -18,7 +21,9 @@ describe('[STORE]', () => {
   });
 
   it('invoke store.model_create("test-model")', () => {
-    model_test = store.model_create('test-model');
+    model_test = store.model_create('test-model', {
+      props_uniq: ['name'],
+    });
   });
 
   it('invoke model_test.create({name: "test"})', async () => {
@@ -40,8 +45,13 @@ describe('[STORE]', () => {
     expect(model_items[0]).toStrictEqual(model_item);
   });
 
-  it(`invoke model_test.delete_by_id()`, async () => {
-    await model_test.delete_by_id(model_item.id);
+  it('invoke model_test.create({name: "test"}) expect Error', async () => {
+    const nil = await model_test.create({
+      name: 'test',
+    }).catch((err) => {
+      expect(err.message).toBe('name is not uniq');
+    });
+    expect(nil).toBeUndefined();
   });
 
   it('invoke model_test.find_by_id()', async () => {
@@ -50,6 +60,23 @@ describe('[STORE]', () => {
       expect(err.code).toBe('ENOENT');
       expect(err.syscall).toBe('open');
     });
+  });
+
+  it('invoke concurent model.update_by_id', async () => {
+    await Promise.all(new Array(2).fill(0).map(({}, i) => {
+      return model_test.update_by_id(model_item.id, {
+        data: `s_${i}`,
+      });
+    }));
+    const item = await model_test.find_by_id(model_item.id);
+    console.log({item});
+    expect(item.data).toBe('s-1');
+    expect(item.id).toBe(model_item.id);
+    expect(item.name).toBe(model_item.name);
+  });
+
+  it(`invoke model_test.delete_by_id()`, async () => {
+    await model_test.delete_by_id(model_item.id);
   });
 
   it('invoke store.umount()', async () => {
