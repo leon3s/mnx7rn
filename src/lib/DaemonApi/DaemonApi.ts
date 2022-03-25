@@ -1,0 +1,5 @@
+class DaemonApi {
+  constructor() {
+    
+  }
+}

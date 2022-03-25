@@ -65,7 +65,7 @@ function verify_network(n: Network) {
 
 function read_njs_file(p_file: string): string {
   const extname = path.extname(p_file);
-  if (extname !== '.njs') {
+  if (extname !== '.vcjs') {
     throw new Error('Can only read .njs file.');
   }
   return fs.readFileSync(p_file, 'utf-8');
@@ -81,7 +81,7 @@ function exec_njs_file(ctx_file: FileContext) {
   s_file.runInContext(ctx_file.ctx_vm);
 }
 
-export async function import_njs(p_file: string) {
+export async function import_vcjs(p_file: string) {
   const c_file = read_njs_file(p_file);
   const ctx_file = create_njs_file_ctx(p_file, c_file);
   exec_njs_file(ctx_file);

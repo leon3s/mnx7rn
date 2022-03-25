@@ -177,6 +177,7 @@ export class HttpClient {
   b_url: string = '';
   socket_path?: string;
   b_headers: IncomingHttpHeaders = {};
+  store: Record<string, any> = {};
 
   constructor(arg?: HttpClientArg) {
     if (arg) {

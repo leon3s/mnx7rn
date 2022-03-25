@@ -1,32 +1,32 @@
-import { readFile, realpath, writeFile } from "fs/promises";
 import path from "path";
-import { rsa_4096_decrypt, rsa_4096_encrypt, rsa_4096_gen } from "../lib/rsa";
+import {
+  readFile,
+  realpath,
+  writeFile,
+} from "fs/promises";
 import { sha256 } from "../lib/sha256";
+import { rsa_4096_gen } from "../lib/rsa";
 
 import type Store from "./store";
 import type { Model } from './store';
 
-export interface UserModel {
-  id: string;
-  name: string;
-  passwd: string;
-};
+import type {User} from '../../headers/user_interface.h';
 
 /**
  * User service
  */
 class UserService {
   store: Store;
-  model: Model<UserModel>;
+  model: Model<User>;
 
   constructor(store: Store) {
     this.store = store;
-    this.model = store.model_create<UserModel>('user', {
+    this.model = store.model_create<User>('user', {
       props_uniq: ['name'],
     });
   }
 
-  create = async (data: Partial<UserModel>) => {
+  create = async (data: Partial<User>) => {
     if (!data.passwd) {
       throw new Error(`passwd is required.`);
     }
@@ -39,7 +39,7 @@ class UserService {
     await writeFile(pub_p, public_key);
   }
 
-  login  = async (data: Partial<UserModel>) => {
+  login  = async (data: Partial<User>) => {
     if (!data.name) {
       throw new Error('name is required.');
     }

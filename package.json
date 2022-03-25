@@ -19,7 +19,7 @@
     "test:lib:http:server": "jest --verbose ./__test__/lib/HttpServer",
     "test:lib:http:client": "jest --verbose ./__test__/lib/HttpClient",
     "test:lib:docker:api": "jest --verbose ./__test__/lib/DockerApi",
-    "test:lib:parser": "jest --verbose ./__test__/lib/np4rser",
+    "test:lib:vcjs": "jest --verbose ./__test__/lib/np4rser",
     "clean": "rm -r dist",
     "debug": "node-debug inspect ."
   },

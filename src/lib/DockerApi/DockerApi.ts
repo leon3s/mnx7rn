@@ -1,6 +1,6 @@
 import { HttpClient } from "../HttpClient";
 
-import generator_ntwk from './Network';
+import generator_ntwk from './network';
 
 /**
  * JSON encoded value of the filters
