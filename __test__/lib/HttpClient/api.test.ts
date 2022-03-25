@@ -1,6 +1,7 @@
 import path from 'path';
-import {HttpClient} from '../../src/HttpClient';
-import {test_server} from '../server_gen';
+
+import {test_server} from '../../server_gen';
+import {HttpClient} from '../../../src/lib/HttpClient';
 
 let client: HttpClient;
 

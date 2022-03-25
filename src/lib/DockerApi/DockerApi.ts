@@ -22,7 +22,7 @@ export type GetNetworks = {
   type?: ["custom"|"builtin"];
 };
 
-export default class ApiDocker {
+export default class DockerApi {
   c: HttpClient;
   networks: ReturnType<typeof generator_ntwk>;
 

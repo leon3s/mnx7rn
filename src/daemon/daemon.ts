@@ -1,4 +1,4 @@
-import {Server} from '../HttpServer';
+import {Server} from '../lib/HttpServer';
 import controllers from './controllers';
 import {store} from './services';
 

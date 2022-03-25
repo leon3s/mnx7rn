@@ -1,6 +1,6 @@
 import path from 'path';
  
-import {import_njs} from '../../src/np4rser/parser';
+import {import_njs} from '../../src/lib/np4rser/parser';
 
 describe('[PARSER_NJS]', () => {
   it('invoke import_njs expect be abble to read test file', async () => {

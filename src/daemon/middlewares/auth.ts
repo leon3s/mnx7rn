@@ -1,4 +1,4 @@
-import { HttpErr, RouteMiddlewareConfig } from "../../HttpServer";
+import { HttpErr, RouteMiddlewareConfig } from "../../lib/HttpServer";
 
 const middleware_auth: RouteMiddlewareConfig = async (route_conf) => {
   return async (req, res) => {

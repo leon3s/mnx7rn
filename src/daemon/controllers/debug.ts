@@ -1,5 +1,5 @@
-import { Ctrl, route_gen } from "../../HttpServer";
-import { HttpContentTypeEnum } from "../../HttpServer/HttpRFC";
+import { Ctrl, route_gen } from "../../lib/HttpServer";
+import { HttpContentTypeEnum } from "../../lib/HttpServer/HttpRFC";
 
 import {middleware_auth} from '../middlewares';
 

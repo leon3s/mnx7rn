@@ -1,8 +1,8 @@
-import ApiDocker from '../../src/api-docker';
+import DockerApi from '../../../src/lib/DockerApi';
 
-const docker_api = new ApiDocker('/var/run/docker.sock');
+const docker_api = new DockerApi('/var/run/docker.sock');
 
-describe('[API DOCKER]', () => {
+describe('[DOCKER API]', () => {
   it('invoke docker_api.networks.list()', async () => {
     const res = await docker_api.networks.list();
     expect(res.status_code).toBe(200);

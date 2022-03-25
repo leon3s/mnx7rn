@@ -1,6 +1,6 @@
 import path from 'path';
 import axios from 'axios';
-import {test_server} from '../server_gen';
+import {test_server} from '../../server_gen';
 
 import type {
   AxiosInstance,

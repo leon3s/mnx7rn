@@ -1,6 +1,6 @@
 import {
   Ctrl,
-} from "../../HttpServer";
+} from "../../lib/HttpServer";
 
 export default class NetworkCtrl extends Ctrl {
 }

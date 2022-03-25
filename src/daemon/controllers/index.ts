@@ -1,4 +1,4 @@
-import {Ctrl} from "../../HttpServer";
+import {Ctrl} from "../../lib/HttpServer";
 
 import UserCtrl from './user';
 import DebugCtrl from "./debug";
