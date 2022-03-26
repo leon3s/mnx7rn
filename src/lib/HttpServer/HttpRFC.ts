@@ -104,9 +104,8 @@ export class Ctrl {
   [props: string]: CtrlBinder | any;
 
   constructor(
-    path = '/'
+    injector?: Record<string, any>
   ) {
-    this.path = path;
   }
 };
 

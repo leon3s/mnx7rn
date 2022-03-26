@@ -5,10 +5,10 @@
  */
 import path from 'path';
 import crypto from 'crypto';
-import fs_p, { writeFile } from 'fs/promises';
-import EventEmitter, {once} from 'events';
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { nextTick } from 'process';
+import EventEmitter, {once} from 'events';
+import fs_p, { writeFile } from 'fs/promises';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 
 async function protectTraversing(basePath: string, wantedPath: string) {
   const p = path.resolve(path.join(basePath, wantedPath));
@@ -185,7 +185,7 @@ export class Model<D = Record<string, any>> {
   }
 }
 
-class Store {
+export class Store {
   path: string;
   models: Record<string, Model<any>> = {};
 
@@ -222,5 +222,3 @@ class Store {
     return model;
   }
 };
-
-export default Store;

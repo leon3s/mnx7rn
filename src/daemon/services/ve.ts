@@ -1,14 +1,13 @@
-import type Store from "./store";
+import type { Store } from "../store";
+import type { Service } from "./interface";
 
 /**
  * Virtual environement
  */
-class VeService {
+export class VeService implements Service {
   store: Store
 
   constructor(store: Store) {
     this.store = store;
   }
 }
-
-export default VeService;

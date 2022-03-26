@@ -1,13 +1,13 @@
-import {Ctrl} from "../../lib/HttpServer";
-
 import UserCtrl from './user';
 import DebugCtrl from "./debug";
 import NetworkCtrl from "./network";
 
-const controllers: Record<string, InstanceType<typeof Ctrl>> = {
-  user_ctrl: new UserCtrl(),
-  debug_ctrl: new DebugCtrl(),
-  network_ctrl: new NetworkCtrl(),
+import type { Ctrl } from "../../lib/HttpServer";
+
+const controllers: Record<string, typeof Ctrl> = {
+  UserCtrl,
+  DebugCtrl,
+  NetworkCtrl,
 };
 
 export default controllers;

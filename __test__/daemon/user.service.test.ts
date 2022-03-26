@@ -1,9 +1,11 @@
 import path from 'path';
 
-import Store from '../../src/daemon/services/store';
-import UserService from '../../src/daemon/services/user';
+import {Store} from '../../src/daemon/store';
+import {UserService} from '../../src/daemon/services/user';
 
-const store = new Store(path.join(__dirname, './test-store'));
+const store_path = path.join(__dirname, './user.service.store');
+
+const store = new Store(store_path);
 const user_service = new UserService(store);
 
 describe('[USER_SERVICE]', () => {

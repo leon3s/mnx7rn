@@ -1,5 +1,5 @@
-import Store from './store';
-import type {Model} from './store';
+import type { Service } from './interface';
+import type { Store, Model } from '../store';
 
 export interface VmModel {
   id: string;
@@ -11,7 +11,7 @@ export interface VmModel {
 /**
  * Virtual machine
  */
-class VmService {
+export class VmService implements Service {
   store: Store;
   model: Model<VmModel>;
 
@@ -29,5 +29,3 @@ class VmService {
   start = (id_or_name: string) => {
   }
 }
-
-export default VmService;

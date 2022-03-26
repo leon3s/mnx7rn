@@ -1,11 +1,10 @@
-import VeService from './ve';
-import VmService from './vm';
-import UserService from './user';
-import Store from './store';
+import { UserService } from './user';
 
-const _store = new Store('./store');
+import type { Service } from './interface';
+export type { Service } from './interface';
 
-export const store = _store;
-export const vm_service = new VmService(store);
-export const ve_service = new VeService(store);
-export const user_service = new UserService(store);
+const services: Record<string, typeof Service> = {
+  UserService,
+};
+
+export default services;

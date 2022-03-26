@@ -1,35 +1,62 @@
-import {Server} from '../lib/HttpServer';
+import path from 'path';
+
+import { Server } from '../lib/HttpServer';
+
+import { Store } from './store';
+import services from './services';
 import controllers from './controllers';
-import {store} from './services';
+
+import type { Service } from './services';
+
+export type DaemonOpts = {
+  store_path?: string;
+}
 
 class Daemon {
-  daemon: Server;
+  server: Server;
+  store: Store;
+  services: Record<string, InstanceType<typeof Service>> = {};
 
-  constructor() {
-    this.daemon = new Server();
+  constructor(opts: DaemonOpts) {
+    this.server = new Server();
+    this.store = new Store(opts.store_path || path.join(__dirname, '../../store'));
   }
 
-  private _add_controllers = () => {
+  private _generate_controllers = () => {
     Object.keys(controllers).forEach((key) => {
-      const controller = controllers[key];
-      this.daemon.add_controller(controller);
+      const Controller = controllers[key];
+      const injector: Record<string, any> & typeof this.services = this.services;
+      injector.store = this.store
+      const controller = new Controller(injector);
+      this.server.add_controller(controller);
     });
   }
 
+  private _generate_services() {
+    Object.keys(services).forEach((key) => {
+      const Service = services[key];
+      const service = new Service(this.store);
+      this.services[key.toLowerCase()] = service as typeof service;
+    });
+  }
+
+  get_service = <T extends Service>(name: string) => {
+    return this.services[name] as T;
+  }
+
   boot = async () => {
-    await store.mount();
-    this._add_controllers();
+    this._generate_services();
+    this._generate_controllers();
+    await this.store.mount();
   }
 
   listen = (host: string, port?: number) => {
-    this.daemon.listen(host, port);
+    this.server.listen(host, port);
   }
 
   close = async () => {
-    await this.daemon.close();
+    await this.server.close();
   }
 }
 
-const daemon = new Daemon();
-
-export default daemon;
+export default Daemon;

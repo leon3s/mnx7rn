@@ -5,17 +5,17 @@ import {
   writeFile,
 } from "fs/promises";
 
-import type Store from "./store";
-import type { Model } from './store';
+import type { Store, Model } from "../store";
 
 import { hmac_sha256, rsa_4096_gen } from "../../lib/crypto";
 
-import type {User} from '../../headers/user_interface.h';
+import type { User } from '../../headers/user_interface.h';
+import type { Service } from "./interface";
 
 /**
  * User service
  */
-class UserService {
+export class UserService implements Service {
   store: Store;
   model: Model<User>;
 
@@ -76,4 +76,3 @@ class UserService {
   }
 }
 
-export default UserService;

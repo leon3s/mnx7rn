@@ -6,8 +6,8 @@ import {
 import type {
   User,
 } from "../../headers/user_interface.h";
-import { user_service } from "../services";
 import { hmac_sha256 } from "../../lib/crypto";
+import { UserService } from "../services/user";
 
 declare module "../../lib/HttpServer" {
   interface HttpReqPartial {
@@ -15,7 +15,7 @@ declare module "../../lib/HttpServer" {
   }
 }
 
-const middleware_auth: RouteMiddlewareConfig = async (route_conf) => {
+const middleware_auth = (userservice: UserService): RouteMiddlewareConfig => async ({}) => {
   return async (req) => {
     const authorize_h = req.headers['authorization'];
       if (!authorize_h) { throw new HttpErr({
@@ -23,16 +23,16 @@ const middleware_auth: RouteMiddlewareConfig = async (route_conf) => {
         message: 'unauthorized',
       });
     }
-    if (!authorize_h.startsWith('RSA ')) { throw new HttpErr({
+    if (!authorize_h.startsWith('Basic ')) { throw new HttpErr({
         status_code: 401,
         message: 'unauthorized',
       });
     }
     const [username, payload] = Buffer.from(
-      authorize_h.replace('RSA ', ''),
+      authorize_h.replace('Basic ', ''),
       'base64',
     ).toString().split(':');
-    const model = await user_service.model.find_by_id(username)
+    const model = await userservice.model.find_by_id(username)
       .catch(() => { throw new HttpErr({
         status_code: 401,
         message: 'unauthorized'

@@ -1,5 +1,5 @@
 {
-  "name": "nanoc",
+  "name": "nanocl",
   "version": "1.0.1",
   "private": false,
   "description": "",
@@ -11,7 +11,8 @@
     "start": "node .",
     "build": "tsc",
     "build:watch": "tsc -w",
-    "build:docker": "ts-node ./dev/build-container-image.ts",
+    "build:docker": "ts-node ./dev/build_container_image.ts",
+    "build:doc:daemon": "ts-node ./dev/gen_daemon_doc.ts",
     "test": "jest --verbose",
     "test:daemon": "jest --verbose ./__test__/daemon",
     "test:daemon:store": "jest --verbose ./__test__/daemon/store.service.test.ts",

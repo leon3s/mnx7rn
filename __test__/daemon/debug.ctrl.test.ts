@@ -1,11 +1,14 @@
+import path from 'path';
 import axios from 'axios';
-import daemon from '../../src/daemon';
+import Daemon from '../../src/daemon';
 
-const socket_path = './debug.ctrl.test.socket';
+const socket_path = './debug.ctrl.sock';
 
 const client = axios.create({
   socketPath: socket_path,
 });
+
+const daemon = new Daemon({store_path: path.join(__dirname, 'debug.ctrl.store')});
 
 describe('DEBUG CONTROLLER', () => {
   beforeAll(async () => {
@@ -20,7 +23,8 @@ describe('DEBUG CONTROLLER', () => {
     expect(res).toBeUndefined();
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await daemon.store.umount();
     daemon.close();
   });
 });
