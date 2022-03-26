@@ -9,7 +9,7 @@ export function rsa_4096_gen() {
     // It is recommended to encode public keys as `'spki'` and private keys as`'pkcs8'` with encryption for long-term storage:
     modulusLength: 4096,
     publicKeyEncoding: {
-      type: 'spki',
+      type: 'pkcs1',
       format: 'pem'
     },
     privateKeyEncoding: {

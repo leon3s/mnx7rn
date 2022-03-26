@@ -1,6 +1,7 @@
-import UserService from '../../src/daemon/services/user';
-import Store from '../../src/daemon/services/store';
 import path from 'path';
+
+import Store from '../../src/daemon/services/store';
+import UserService from '../../src/daemon/services/user';
 
 const store = new Store(path.join(__dirname, './test-store'));
 const user_service = new UserService(store);

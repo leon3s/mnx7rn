@@ -3,6 +3,7 @@ export {
   RouteConf,
   HttpErr,
   Ctrl,
+  HttpReqPartial,
   RouteMiddlewareConfig,
   HttpContentTypeEnum as ContentTypeEnum,
 } from './HttpRFC';

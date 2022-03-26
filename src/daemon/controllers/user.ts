@@ -9,7 +9,7 @@ export default class UserCtrl extends Ctrl {
     const [route, bind_route] = route_gen();
     route.req.middlewares.push(middleware_auth);
     bind_route(async (req) => {
-      return {};
+      return req.p_user;
     });
     return route;
   }
@@ -29,7 +29,7 @@ export default class UserCtrl extends Ctrl {
       },
     };
     bind_route(async (req) => {
-      const rsa_pub = user_service.login({
+      const rsa_pub = await user_service.login({
         name: req.p_body.name,
         passwd: req.p_body.passwd,
       });

@@ -138,11 +138,17 @@ export class Model<D = Record<string, any>> {
     return file_c;
   }
 
-  create = async (data: Partial<ModelItem<D>>): Promise<ModelItem<D>> => {
+  generate = (data: Partial<ModelItem<D>>) => {
+    if (data.id) return data as ModelItem<D>;
     const data_c = {
       ...data,
       id: gen_id(),
     } as ModelItem<D>;
+    return data_c;
+  }
+
+  create = async (data: Partial<ModelItem<D>>): Promise<ModelItem<D>> => {
+    const data_c = this.generate(data);
     if (this.props_uniq) {
       const new_uniq_props = this.props_uniq.reduce((acc: Record<string, ModelMetaPropUniq>, prop) => {
         if (this.meta.props_uniq[prop][data_c[prop]]) {

@@ -4,11 +4,11 @@ import {
   realpath,
   writeFile,
 } from "fs/promises";
-import { sha256 } from "../lib/sha256";
-import { rsa_4096_gen } from "../lib/rsa";
 
 import type Store from "./store";
 import type { Model } from './store';
+
+import { hmac_sha256, rsa_4096_gen } from "../../lib/crypto";
 
 import type {User} from '../../headers/user_interface.h';
 
@@ -30,14 +30,27 @@ class UserService {
     if (!data.passwd) {
       throw new Error(`passwd is required.`);
     }
-    data.passwd = sha256(data.passwd);
-    const user = await this.model.create(data);
-    const [private_key, public_key] = rsa_4096_gen();
+    const user = this.model.generate(data);
     const priv_p = path.join(this.model.path, user.id, 'priv.pem');
     const pub_p = path.join(this.model.path, user.id, 'pub.pem');
+    const [private_key, public_key] = rsa_4096_gen();
+    user.passwd = hmac_sha256(data.passwd, private_key);
+    const user_model = await this.model.create(user);
     await writeFile(priv_p, private_key);
     await writeFile(pub_p, public_key);
-    return user;
+    return user_model;
+  }
+ 
+  get_priv_key_by_id = async (id: string) => {
+    const pub_key_p = await realpath(path.join(this.model.path, id, 'priv.pem'));
+    const public_key = await readFile(pub_key_p, 'utf-8');
+    return public_key;
+  }
+
+  get_pub_key_by_id = async (id: string) => {
+    const pub_key_p = await realpath(path.join(this.model.path, id, 'pub.pem'));
+    const public_key = await readFile(pub_key_p, 'utf-8');
+    return public_key;
   }
 
   login  = async (data: Partial<User>) => {
@@ -48,12 +61,18 @@ class UserService {
       throw new Error('passwd is required.');
     }
     const model = await this.model.find_by_id(data.name);
-    const passwd = sha256(data.passwd);
+    const private_key = await this.get_priv_key_by_id(model.id);
+    const passwd = hmac_sha256(data.passwd, private_key);
     if (passwd !== model.passwd) {
       throw new Error('unauthorized.');
     }
-    const pub_pem_p = await realpath(path.join(this.model.path, model.id, 'pub.pem'));
-    return readFile(pub_pem_p, 'utf-8');
+    return hmac_sha256(JSON.stringify({id: model.id }), passwd);
+    // Old way with rsa signature
+    // const sign = crypto.createSign('SHA256');
+    // sign.update(JSON.stringify(model));
+    // sign.end();
+    // const signature = sign.sign(private_key);
+    // return signature.toString('base64');
   }
 }
 

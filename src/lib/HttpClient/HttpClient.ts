@@ -99,7 +99,7 @@ class HttpClientRequest {
   private _data_format = (r_b_res: Buffer, content_type?: string) => {
     let data: any = r_b_res;
     if (!content_type) return data;
-    if (content_type.startsWith('application/json')) {
+    if (data?.length && content_type.startsWith('application/json')) {
       data = JSON.parse(data.toString());
     }
     if (content_type.startsWith('text/plain')) {
