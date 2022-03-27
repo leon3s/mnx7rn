@@ -13,7 +13,7 @@ import type {
   IncomingMessage,
   Server as HttpServer,
 } from 'http';
-import type {Ctrl} from './HttpRFC';
+import type { Ctrl } from './HttpRFC';
 
 export class Server {
   host: string = '';

@@ -1,7 +1,14 @@
-import {argv, stdout} from 'process';
-import {daemon, network, login} from './commands';
+import {
+  argv,
+  stdout,
+} from 'process';
+import {
+  login,
+  daemon,
+  network,
+} from './commands';
 
-import type {Commands} from './args_parser';
+import type { Commands } from './args_parser';
 
 async function print_version() {
   stdout.write('nanocl version 1.0.0, build a224086\n');
