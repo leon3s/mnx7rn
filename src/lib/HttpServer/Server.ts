@@ -40,7 +40,7 @@ export class Server {
       dbg("error request [%s] [%o]", req.url, err);
       res.statusCode = err.status_code || 500;
       res.setHeader('Content-Type', 'application/json');
-      res.end(err.body || { message: err.message });
+      res.end(err.body || JSON.stringify({ message: err.message }));
     });
   }
 

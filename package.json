@@ -13,6 +13,7 @@
     "build:watch": "tsc -w",
     "build:docker": "ts-node ./dev/build_container_image.ts",
     "build:doc:daemon": "ts-node ./dev/gen_daemon_doc.ts",
+    "dev:create:root": "ts-node ./dev/create_root_user.ts",
     "test": "jest --verbose",
     "test:daemon": "jest --verbose ./__test__/daemon",
     "test:daemon:store": "jest --verbose ./__test__/daemon/store.service.test.ts",

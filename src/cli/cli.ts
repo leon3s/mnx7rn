@@ -49,8 +49,8 @@ export function main() {
   }
   command = commands[argv[2]];
   if (!command) {
-    stdout.write(`nanocl \`${argv[2]}\` is not a command try\n`);
-    stdout.write('see \`nanocl --help\`\n')
+    stdout.write(`nanocl \`${argv[2]}\` is not a command\n`);
+    stdout.write('see \`nanocl --help\`\n');
     process.exit(1);
   }
   command(...[...argv].slice(3))

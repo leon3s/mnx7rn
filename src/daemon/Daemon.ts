@@ -7,6 +7,7 @@ import controllers from './controllers';
 import { Server } from '../lib/HttpServer';
 
 import type { Service } from './services';
+import { stdout } from 'process';
 
 export type DaemonOpts = {
   store_path?: string;
@@ -20,6 +21,15 @@ class Daemon {
   constructor(opts: DaemonOpts) {
     this.server = new Server();
     this.store = new Store(opts.store_path || path.join(__dirname, '../../store'));
+    this._watch_exit();
+  }
+
+  private _watch_exit() {
+    process.once('SIGINT', () => {
+      stdout.write('\n');
+      stdout.clearScreenDown();
+      this.server.close();
+    });
   }
 
   private _generate_controllers = () => {

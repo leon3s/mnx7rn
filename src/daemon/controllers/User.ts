@@ -1,5 +1,9 @@
-import { Ctrl, route_gen } from "../../lib/HttpServer";
-import { HttpContentTypeEnum } from "../../lib/HttpServer/HttpRFC";
+import {
+  Ctrl,
+  HttpErr,
+  route_gen,
+  ContentTypeEnum,
+} from "../../lib/HttpServer";
 import { middleware_auth } from "../middlewares";
 
 import type { UserService } from "../services/User";
@@ -29,7 +33,7 @@ export default class UserCtrl extends Ctrl {
 
   "POST /users/login" = () => {
     const [route, bind_route] = route_gen();
-    route.req.body.content_type = HttpContentTypeEnum.JSON;
+    route.req.body.content_type = ContentTypeEnum.JSON;
     route.req.body.schema = {
       type: 'object',
       properties: {
@@ -45,6 +49,11 @@ export default class UserCtrl extends Ctrl {
       const rsa_pub = await this.userservice.login({
         name: req.p_body.name,
         passwd: req.p_body.passwd,
+      }).catch(() => {
+        throw new HttpErr({
+          status_code: 401,
+          message: 'unauthorized',
+        });
       });
       return { key: rsa_pub };
     });
