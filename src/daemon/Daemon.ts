@@ -1,10 +1,10 @@
 import path from 'path';
 
-import { Server } from '../lib/HttpServer';
-
-import { Store } from './store';
+import { Store } from './Store';
 import services from './services';
 import controllers from './controllers';
+
+import { Server } from '../lib/HttpServer';
 
 import type { Service } from './services';
 

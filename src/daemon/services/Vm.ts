@@ -1,5 +1,5 @@
-import type { Service } from './interface';
-import type { Store, Model } from '../store';
+import type { Service } from './Interface';
+import type { Store, Model } from '../Store';
 
 export interface VmModel {
   id: string;

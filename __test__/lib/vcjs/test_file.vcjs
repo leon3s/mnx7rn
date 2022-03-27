@@ -1,5 +1,5 @@
 host(class MainHost {
-  host_name = 'nanocld.main';
+  host_name = 'nanocl.main';
   socket_path = './test.sock';
 });
 

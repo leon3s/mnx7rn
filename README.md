@@ -19,5 +19,5 @@ npm install -g nanocl
 
 - with dpkg
 ```sh
-curl https://nanocl.nxthat.com/download/dpkg/latest -o nanocld.deb
+curl https://nanocl.nxthat.com/download/dpkg/latest -o nanocl.deb
 ```

@@ -1,15 +1,15 @@
 import {argv, stdout} from 'process';
-import {daemon, network} from './commands';
+import {daemon, network, login} from './commands';
 
 import type {Commands} from './args_parser';
 
 async function print_version() {
-  stdout.write('nanocld version 1.0.0, build a224086\n');
+  stdout.write('nanocl version 1.0.0, build a224086\n');
 }
 
 async function main_print_help() {
   stdout.write(
-    '\nUsage: nanocld [OPTIONS] COMMAND\n' +
+    '\nUsage: nanocl [OPTIONS] COMMAND\n' +
     '\nOptions:\n' +
     '  version, -v, --version  Print version information and quit\n' +
     '  help, -h, --help        Print help information and quit\n' +
@@ -17,7 +17,8 @@ async function main_print_help() {
     '  network  Manage network\n'+
     '\nCommands:\n'+
     '  daemon   Start daemon\n' +
-    '\nTo get more help with nanocld, check out our guides at https://nanocld.nxthat.com/guides/'
+    '  login    Login as given user' +
+    '\nTo get more help with nanocl, check out our guides at https://nanocl.nxthat.com/guides/'
   );
   stdout.write('\n');
 }
@@ -25,6 +26,7 @@ async function main_print_help() {
 const commands: Commands = {
   daemon,
   network,
+  login,
   '-v': print_version,
   'version': print_version,
   '--version': print_version,
@@ -40,8 +42,8 @@ export function main() {
   }
   command = commands[argv[2]];
   if (!command) {
-    stdout.write(`nanocld \`${argv[2]}\` is not a command try\n`);
-    stdout.write('see \`nanocld --help\`\n')
+    stdout.write(`nanocl \`${argv[2]}\` is not a command try\n`);
+    stdout.write('see \`nanocl --help\`\n')
     process.exit(1);
   }
   command(...[...argv].slice(3))

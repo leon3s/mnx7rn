@@ -1,7 +1,7 @@
 import path from 'path';
 import Daemon from '../../../src/daemon';
 import DaemonApi from '../../../src/lib/DaemonApi';
-import { UserService } from '../../../src/daemon/services/user';
+import { UserService } from '../../../src/daemon/services';
 
 const socket_path = './user.test.sock';
 

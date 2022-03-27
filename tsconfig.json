@@ -8,7 +8,8 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,
-    "declaration": true
+    "declaration": true,
+    "removeComments": true
   },
   "exclude": [
     "dist",

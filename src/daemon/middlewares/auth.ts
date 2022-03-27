@@ -7,7 +7,7 @@ import type {
   User,
 } from "../../headers/user_interface.h";
 import { hmac_sha256 } from "../../lib/crypto";
-import { UserService } from "../services/user";
+import { UserService } from "../services/User";
 
 declare module "../../lib/HttpServer" {
   interface HttpReqPartial {

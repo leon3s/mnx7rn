@@ -1,5 +1,5 @@
-import type { Store } from "../store";
-import type { Service } from "./interface";
+import type { Store } from "../Store";
+import type { Service } from "./Interface";
 
 /**
  * Virtual environement

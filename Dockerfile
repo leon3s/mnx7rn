@@ -17,22 +17,22 @@ RUN npm install -g npm@latest
 
 RUN apt-get install sudo -y
 
-RUN useradd -m nanocld
+RUN useradd -m nanocl
 
-RUN usermod -aG docker nanocld
+RUN usermod -aG docker nanocl
 
-WORKDIR /home/nanocld
+WORKDIR /home/nanocl
 
-RUN chown nanocld:nanocld -R /home/nanocld
+RUN chown nanocl:nanocl -R /home/nanocl
 
-COPY --chown=nanocld ./package.json ./tsconfig.json ./image-entry.sh ./
+COPY --chown=nanocl ./package.json ./tsconfig.json ./image-entry.sh ./
 
 RUN npm install
 
-COPY --chown=nanocld ./src/ ./src/
+COPY --chown=nanocl ./src/ ./src/
 
 RUN npm run build
 
-RUN chown nanocld:nanocld /home/nanocld
+RUN chown nanocl:nanocl /home/nanocl
 
 ENTRYPOINT [ "bash", "image-entry.sh" ]

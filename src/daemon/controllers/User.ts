@@ -2,7 +2,7 @@ import { Ctrl, route_gen } from "../../lib/HttpServer";
 import { HttpContentTypeEnum } from "../../lib/HttpServer/HttpRFC";
 import { middleware_auth } from "../middlewares";
 
-import type { UserService } from "../services/user";
+import type { UserService } from "../services/User";
 
 export default class UserCtrl extends Ctrl {
   userservice: InstanceType<typeof UserService>;

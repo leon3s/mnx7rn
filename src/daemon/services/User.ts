@@ -5,12 +5,20 @@ import {
   writeFile,
 } from "fs/promises";
 
-import type { Store, Model } from "../store";
-
-import { hmac_sha256, rsa_4096_gen } from "../../lib/crypto";
-
-import type { User } from '../../headers/user_interface.h';
-import type { Service } from "./interface";
+import type {
+  Store,
+  Model,
+} from "../Store";
+import type {
+  Service
+} from "./Interface";
+import {
+  hmac_sha256,
+  rsa_4096_gen,
+} from "../../lib/crypto";
+import type {
+  User,
+} from '../../headers/Daemon.h';
 
 /**
  * User service
@@ -66,7 +74,7 @@ export class UserService implements Service {
     if (passwd !== model.passwd) {
       throw new Error('unauthorized.');
     }
-    return hmac_sha256(JSON.stringify({id: model.id }), passwd);
+    return hmac_sha256(JSON.stringify({ id: model.id }), passwd);
     // Old way with rsa signature
     // const sign = crypto.createSign('SHA256');
     // sign.update(JSON.stringify(model));
@@ -75,4 +83,3 @@ export class UserService implements Service {
     // return signature.toString('base64');
   }
 }
-

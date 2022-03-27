@@ -1,6 +1,6 @@
-import UserCtrl from './user';
-import DebugCtrl from "./debug";
-import NetworkCtrl from "./network";
+import UserCtrl from './User';
+import DebugCtrl from "./Debug";
+import NetworkCtrl from "./Network";
 
 import type { Ctrl } from "../../lib/HttpServer";
 

@@ -10,7 +10,7 @@ import type { Commands } from '../args_parser';
 
 function print_help() {
   stdout.write(`
-Usage:  nanocld network COMMAND
+Usage:  nanocl network COMMAND
 
 Manage networks
 
@@ -23,13 +23,13 @@ Commands:
   prune       Remove all unused networks
   rm          Remove one or more networks
 
-Run 'nanocld network COMMAND --help' for more information on a command.
+Run 'nanocl network COMMAND --help' for more information on a command.
 `)
 };
 
 function print_create_help() {
   stdout.write(`
-Usage:  nanocld network create [OPTIONS] NETWORK
+Usage:  nanocl network create [OPTIONS] NETWORK
 
 Create a network
 
@@ -51,7 +51,7 @@ Options:
       --scope string         Control the network's scope
       --subnet strings       Subnet in CIDR format that represents a network segment
 
-exemple: nanocld network create super_network
+exemple: nanocl network create super_network
 
 `)
 }
@@ -90,12 +90,12 @@ const commands: Commands = {
     ])
     .catch((err) => {
       stdout.write(`${err.message}\n`);
-      stdout.write(`see nanocld network connect --help\n`);
+      stdout.write(`see nanocl network connect --help\n`);
       exit(1);
     });
     if (args_new.length !== 1) {
-      stdout.write(`nanocld network create \`${args.join(' ')}\` is not valid\n`);
-      stdout.write('see \`nanocld network create --help\`\n')
+      stdout.write(`nanocl network create \`${args.join(' ')}\` is not valid\n`);
+      stdout.write('see \`nanocl network create --help\`\n')
       process.exit(1);
     }
     if (args_values.help) {
@@ -110,7 +110,7 @@ const commands: Commands = {
     }).catch((err) => {
       if (err.errno === -2) {
         stdout.write('unable to connect to daemon\n');
-        stdout.write('try nanocld daemon\n');
+        stdout.write('try nanocl daemon\n');
       }
       stdout.write(`Error response from daemon: ${err.data.message}\n`);
       exit(1);
@@ -126,8 +126,8 @@ export default async function network(...argv: string[]) {
   }
   const command = commands[argv[0]];
   if (!command) {
-    stdout.write(`nanocld \`${argv[2]}\` is not a command\n`);
-    stdout.write('see \`nanocld network --help\`\n');
+    stdout.write(`nanocl \`${argv[2]}\` is not a command\n`);
+    stdout.write('see \`nanocl network --help\`\n');
     process.exit(1);
   }
   command(...[...argv].slice(1));

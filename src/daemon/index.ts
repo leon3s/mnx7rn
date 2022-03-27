@@ -1,3 +1,3 @@
-import daemon from './daemon';
+import Daemon from './Daemon';
 
-export default daemon;
+export default Daemon;

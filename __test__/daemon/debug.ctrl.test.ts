@@ -1,5 +1,6 @@
 import path from 'path';
 import axios from 'axios';
+
 import Daemon from '../../src/daemon';
 
 const socket_path = './debug.ctrl.sock';
