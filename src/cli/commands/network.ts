@@ -7,6 +7,7 @@ import { HttpClient } from '../../lib/HttpClient';
 import args_parser from '../args_parser';
 
 import type { Commands } from '../args_parser';
+import daemon_api from '../daemon_api';
 
 function print_help() {
   stdout.write(`
@@ -102,20 +103,18 @@ const commands: Commands = {
       print_create_help();
       exit(0);
     }
-    const client = new HttpClient({
-      socket_path: './test.socket',
-    });
-    const res = await client.post<any>('/networks', {
-      name: args_new[0],
-    }).catch((err) => {
-      if (err.errno === -2) {
-        stdout.write('unable to connect to daemon\n');
-        stdout.write('try nanocl daemon\n');
-      }
-      stdout.write(`Error response from daemon: ${err.data.message}\n`);
-      exit(1);
-    });
-    stdout.write(JSON.stringify(res.data, null, 2));
+    // daemon_api
+    // const res = await client.post<any>('/networks', {
+    //   name: args_new[0],
+    // }).catch((err) => {
+    //   if (err.errno === -2) {
+    //     stdout.write('unable to connect to daemon\n');
+    //     stdout.write('try nanocl daemon\n');
+    //   }
+    //   stdout.write(`Error response from daemon: ${err.data.message}\n`);
+    //   exit(1);
+    // });
+    // stdout.write(JSON.stringify(res.data, null, 2));
   }
 }
 

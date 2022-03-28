@@ -1,5 +1,6 @@
 import type { HttpClient } from "../HttpClient";
 import type { User, UserLoginReq, UserLoginRes } from "../../headers/user_interface.h";
+import { write_host_credential } from "./credential";
 
 function set_authorization_header(c: HttpClient) {
   const {username, key} = c.store as {username: string, key: string};

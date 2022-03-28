@@ -1,10 +1,10 @@
-import { exit, stderr, stdin } from "process";
+import { URL } from "url";
+import { exit, stderr } from "process";
+
 import prompt from "../../lib/prompt";
+import { write_host_credential } from "../credential";
 
 import daemon_api from "../daemon_api";
-
-function store_credential() {
-}
 
 export default async function login() {
   const username = await prompt("username > ");
@@ -16,5 +16,10 @@ export default async function login() {
     stderr.write('nanocl `login` failed\n');
     exit(1);
   });
-  console.log(res.data.key);
+  let host = daemon_api.c.socket_path || daemon_api.c.b_url;
+  if (!host.startsWith('http')) {
+    host = `unix://${host}`;
+  }
+  const url = new URL(host);
+  await write_host_credential(url, `${username}:${res.data.key}`);
 }

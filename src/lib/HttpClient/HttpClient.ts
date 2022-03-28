@@ -134,7 +134,7 @@ class HttpClientRequest {
       this.emitter.once('fullfiled', (r_b_res: Buffer) => {
         if (!this.r_res) {
           return reject({
-            message: 'Unexpected error',
+            message: 'unexpected error',
           });
         }
         const {

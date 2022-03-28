@@ -36,6 +36,7 @@ describe('[DEAMON API USER]', () => {
 
   it('[invoke] {daemon_api.users.whoiam()} expect [200]', async () => {
     const res = await daemon_api.users.whoami();
+    console.log(res.data);
   });
 
   afterAll(async () => {

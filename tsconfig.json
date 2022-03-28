@@ -12,9 +12,9 @@
     "removeComments": true
   },
   "exclude": [
+    "dev",
     "dist",
     "__test__",
-    "dev",
     "node_modules"
   ]
 }
