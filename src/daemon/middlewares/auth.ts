@@ -7,7 +7,7 @@ import type {
   User,
 } from "../../headers/user_interface.h";
 import { hmac_sha256 } from "../../lib/crypto";
-import { UserService } from "../services/User";
+import { user_service } from "../services";
 
 declare module "../../lib/HttpServer" {
   interface HttpReqPartial {
@@ -15,7 +15,7 @@ declare module "../../lib/HttpServer" {
   }
 }
 
-const middleware_auth = (userservice: UserService): RouteMiddlewareConfig => async ({}) => {
+const middleware_auth = (): RouteMiddlewareConfig => async ({}) => {
   return async (req) => {
     const authorize_h = req.headers['authorization'];
       if (!authorize_h) { throw new HttpErr({
@@ -32,7 +32,7 @@ const middleware_auth = (userservice: UserService): RouteMiddlewareConfig => asy
       authorize_h.replace('Basic ', ''),
       'base64',
     ).toString().split(':');
-    const model = await userservice.model.find_by_id(username)
+    const model = await user_service.model.find_by_id(username)
       .catch(() => { throw new HttpErr({
         status_code: 401,
         message: 'unauthorized'

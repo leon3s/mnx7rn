@@ -5,12 +5,12 @@ import { UserService } from '../../src/daemon/services';
 
 const store_path = path.join(__dirname, './user.service.store');
 
-const store = new Store(store_path);
+const store = new Store();
 const user_service = new UserService(store);
 
 describe('[USER_SERVICE]', () => {
   beforeAll(async () => {
-    await store.mount();
+    await store.mount(store_path);
   });
 
   it('invoke user.create()', async () => {

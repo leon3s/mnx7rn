@@ -1,7 +1,7 @@
 import path from 'path';
 import Daemon from '../../../src/daemon';
 import DaemonApi from '../../../src/lib/DaemonApi';
-import { UserService } from '../../../src/daemon/services';
+import { user_service } from '../../../src/daemon/services';
 
 const socket_path = './user.test.sock';
 
@@ -16,8 +16,7 @@ const daemon = new Daemon({
 describe('[DEAMON API USER]', () => {
   beforeAll(async () => {
     await daemon.boot();
-    const userservice = daemon.get_service<UserService>('userservice');
-    const user = await userservice.create({
+    const user = await user_service.create({
       name: 'root',
       passwd: 'root',
     });
@@ -36,7 +35,7 @@ describe('[DEAMON API USER]', () => {
 
   it('[invoke] {daemon_api.users.whoiam()} expect [200]', async () => {
     const res = await daemon_api.users.whoami();
-    console.log(res.data);
+    expect(res.data.name).toBe('root');
   });
 
   afterAll(async () => {

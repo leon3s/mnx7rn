@@ -5,25 +5,13 @@ import {
   ContentTypeEnum,
 } from "../../lib/HttpServer";
 import { middleware_auth } from "../middlewares";
-
-import type { UserService } from "../services/User";
+import { user_service } from "../services";
 
 export default class UserCtrl extends Ctrl {
-  userservice: InstanceType<typeof UserService>;
-
-  constructor({
-    userservice
-  } : {
-    userservice: InstanceType<typeof UserService>
-  }) {
-    super();
-    this.userservice = userservice;
-  }
-
   "GET /users/whoami" = () => {
     const [route, bind_route] = route_gen();
     route.req.middlewares.push(
-      middleware_auth(this.userservice)
+      middleware_auth()
     );
     bind_route(async (req) => {
       return req.p_user;
@@ -46,7 +34,7 @@ export default class UserCtrl extends Ctrl {
       },
     };
     bind_route(async (req) => {
-      const rsa_pub = await this.userservice.login({
+      const rsa_pub = await user_service.login({
         name: req.p_body.name,
         passwd: req.p_body.passwd,
       }).catch(() => {

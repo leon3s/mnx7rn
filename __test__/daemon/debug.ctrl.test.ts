@@ -17,8 +17,8 @@ describe('DEBUG CONTROLLER', () => {
     daemon.listen(socket_path);
   });
 
-  it('invoke [GET /debug] expect 401', async () => {
-    const res = await client.get('/debug').catch((err) => {
+  it('invoke [GET /debug/ping] expect 401', async () => {
+    const res = await client.get('/debug/ping').catch((err) => {
       expect(err.response.status).toBe(401);
     });
     expect(res).toBeUndefined();

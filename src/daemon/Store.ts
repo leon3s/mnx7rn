@@ -28,7 +28,6 @@ function gen_id() {
 
 type ModelOpts = {
   name: string;
-  path: string;
   props_uniq?: string[];
 }
 
@@ -44,23 +43,23 @@ export type ModelItem<D = Record<string, any>> = D & {
 } & Record<string, any>;
 
 export class Model<D = Record<string, any>> {
-  path: string;
+  path: string = '';
   props_uniq?: string[];
   is_writing: boolean = false;
   e: EventEmitter;
-  meta_p: string;
+  meta_p: string = '';
   meta: ModelMeta = {
     props_uniq: {},
   }
 
   constructor(opts: ModelOpts) {
-    this.path = opts.path;
-    this.meta_p = path.join(opts.path, 'meta.json');
     this.props_uniq = opts.props_uniq;
     this.e = new EventEmitter();
   }
 
-  mount = async () => {
+  mount = async (s_path: string) => {
+    this.path = s_path;
+    this.meta_p = path.join(s_path, 'meta.json');
     await fs_p.mkdir(this.path, { recursive: true });
     await this._gen_meta();
   }
@@ -186,20 +185,18 @@ export class Model<D = Record<string, any>> {
 }
 
 export class Store {
-  path: string;
+  path: string = '/var/lib/nanocl';
   models: Record<string, Model<any>> = {};
 
-  constructor(s_path: string) {
-    this.path = s_path;
-  };
-
-  mount = async () => {
+  mount = async (s_path?: string) => {
+    if (s_path) this.path = s_path;
     await fs_p.mkdir(this.path, {
       recursive: true,
     });
     await Promise.all(Object.keys(this.models).map(async (key) => {
       const model = this.models[key];
-      await model.mount();
+    const model_p = path.join(this.path, key);
+    await model.mount(model_p);
     }));
   }
 
@@ -211,14 +208,14 @@ export class Store {
   }
 
   model_create = <D = Record<string, any>>(name: string, opts?: Partial<ModelOpts>) => {
-    const model_p = path.join(this.path, name);
     const model_opts = {
       ...(opts || {}),
       name,
-      path: model_p,
     };
     const model = new Model<D>(model_opts);
     this.models[name] = model;
     return model;
   }
 };
+
+export const store = new Store();
