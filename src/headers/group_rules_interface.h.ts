@@ -1,7 +1,7 @@
 /**
  * Group Rule interface
  */
- export interface GroupRule {
+declare interface GroupRule {
   id: string;
   group_name: string;
 };
@@ -9,7 +9,7 @@
 /**
  * Argument required to create a GroupRule
  */
-export interface GroupRuleCreateReq {
+declare interface GroupRuleCreateReq {
   group_name: string;
   method: string;
   path: string;

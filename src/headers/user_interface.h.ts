@@ -1,7 +1,7 @@
 /**
  * User interface
  */
-export interface User {
+declare interface User {
   id: string;
   name: string;
   passwd: string;
@@ -11,7 +11,7 @@ export interface User {
 /**
  * Argument required for login
  */
-export interface UserLoginReq {
+declare interface UserLoginReq {
   name: string;
   passwd: string;
 };
@@ -19,6 +19,6 @@ export interface UserLoginReq {
 /**
  * Argument returned from login
  */
-export interface UserLoginRes {
+declare interface UserLoginRes {
   key: string;
 };

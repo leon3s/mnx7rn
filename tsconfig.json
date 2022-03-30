@@ -9,7 +9,10 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "declaration": true,
-    "removeComments": true
+    "removeComments": true,
+    "paths": {
+      "*": ["./src/**/*.h.ts"]
+    }
   },
   "exclude": [
     "dev",

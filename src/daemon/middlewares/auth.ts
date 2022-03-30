@@ -3,9 +3,6 @@ import {
   RouteMiddlewareConfig,
 } from "../../lib/HttpServer";
 
-import type {
-  User,
-} from "../../headers/user_interface.h";
 import { hmac_sha256 } from "../../lib/crypto";
 import { user_service } from "../services";
 

@@ -1,7 +1,7 @@
 /**
  * Group interface
  */
- export interface Group {
+declare interface Group {
   id: string;
   name: string;
 };
@@ -9,6 +9,6 @@
 /**
  * Argument to create a Group
  */
-export interface GroupCreateReq {
+declare type GroupCreateReq = {
   name: string;
 };

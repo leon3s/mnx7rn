@@ -4,7 +4,6 @@ import {
   realpath,
   writeFile,
 } from "fs/promises";
-
 import type {
   Store,
   Model,
@@ -16,9 +15,6 @@ import {
   hmac_sha256,
   rsa_4096_gen,
 } from "../../lib/crypto";
-import type {
-  User,
-} from '../../headers/Daemon.h';
 
 /**
  * User service
