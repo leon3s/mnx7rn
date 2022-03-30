@@ -2,7 +2,7 @@ import {
   Ctrl,
   Server,
   route_gen,
-  ContentTypeEnum,
+  HttpContentTypeEnum,
 } from '../src/lib/HttpServer';
 
 export const test_server = new Server();
@@ -39,7 +39,7 @@ class RootCtrl extends Ctrl {
 
   "POST /test_post" = () => {
     const [route, bind_route] = route_gen();
-    route.req.body.content_type = ContentTypeEnum.JSON;
+    route.req.body.content_type = HttpContentTypeEnum.JSON;
     route.res.status_code = 201;
     bind_route(async (req) => {
       return { body: req.p_body, pong: true };
@@ -49,7 +49,7 @@ class RootCtrl extends Ctrl {
 
   "PATCH /test_patch" = () => {
     const [route, bind_route] = route_gen();
-    route.req.body.content_type = ContentTypeEnum.JSON;
+    route.req.body.content_type = HttpContentTypeEnum.JSON;
     route.res.status_code = 203;
     bind_route(async (req) => {
       return { body: req.p_body, pong: true };

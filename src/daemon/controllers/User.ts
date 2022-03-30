@@ -2,7 +2,7 @@ import {
   Ctrl,
   HttpErr,
   route_gen,
-  ContentTypeEnum,
+  HttpContentTypeEnum,
 } from "../../lib/HttpServer";
 import { middleware_auth } from "../middlewares";
 import { user_service } from "../services";
@@ -21,7 +21,7 @@ export default class UserCtrl extends Ctrl {
 
   "POST /users/login" = () => {
     const [route, bind_route] = route_gen();
-    route.req.body.content_type = ContentTypeEnum.JSON;
+    route.req.body.content_type = HttpContentTypeEnum.JSON;
     route.req.body.schema = {
       type: 'object',
       properties: {

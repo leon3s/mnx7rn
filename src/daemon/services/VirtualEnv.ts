@@ -5,7 +5,7 @@ import docker_api from "../api/docker";
 /**
  * Virtual environement service
  */
-export class VeService implements Service {
+export class VirtualEnvService implements Service {
   store: Store;
   model: Model<VirtualEnv>;
 

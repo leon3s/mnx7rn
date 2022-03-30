@@ -5,7 +5,7 @@ export {
   Ctrl,
   HttpReqPartial,
   RouteMiddlewareConfig,
-  HttpContentTypeEnum as ContentTypeEnum,
+  HttpContentTypeEnum,
 } from './HttpRFC';
 
 export { default as route_gen} from './route_gen';
