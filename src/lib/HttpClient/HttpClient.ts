@@ -60,7 +60,7 @@ class HttpClientRequest {
   private _add_sp = (sp: SearchParams) => {
     Object.keys(sp).forEach((key) => {
       const value = sp[key];
-      this.p_url.searchParams.append(key, JSON.stringify(value));
+      this.p_url.searchParams.append(key, typeof value === 'object' ? JSON.stringify(value) : value);
     });
   }
 
@@ -231,15 +231,15 @@ export class HttpClient {
     return this._process_gen_request<D>(u_url, 'GET', opts);
   }
 
-  post = async <D = Buffer>(u_url: string, data: any = {}, opts: HttpClientOpts = {}) => {
+  post = async <D = Buffer>(u_url: string, data: any = null, opts: HttpClientOpts = {}) => {
     return this._process_gen_request<D>(u_url, 'POST', opts, data);
   }
 
-  patch = async <D = Buffer>(u_url: string, data: any = {}, opts: HttpClientOpts = {}) => {
+  patch = async <D = Buffer>(u_url: string, data: any = null, opts: HttpClientOpts = {}) => {
     return this._process_gen_request<D>(u_url, 'PATCH', opts, data);
   }
 
-  put = async <D = Buffer>(u_url: string, data: any = {}, opts: HttpClientOpts = {}) => {
+  put = async <D = Buffer>(u_url: string, data: any = null, opts: HttpClientOpts = {}) => {
     return this._process_gen_request<D>(u_url, 'PUT', opts, data);
   }
 

@@ -10,9 +10,9 @@ let api: AxiosInstance;
 
 describe('[HttpServer_ROOT_CONTROLLER]', () => {
   beforeAll(() => {
-    test_server.listen(`unix://${path.join(__dirname, './test.socket')}`);
+    test_server.listen(`unix://${path.join(__dirname, './http-test.socket')}`);
     api = axios.create({
-      socketPath: path.join(__dirname, './test.socket'),
+      socketPath: path.join(__dirname, './http-test.socket'),
     });
   });
 
