@@ -39,32 +39,34 @@ describe('[DOCKER API]', () => {
       Image: 'nginx:latest',
     });
     container = res.data;
+    expect(res.data.Id).toBeDefined();
+    expect(res.status_code).toBe(201);
   });
 
   it('invoke docker_api.containers.start(Id)', async () => {
-    await docker_api.containers.start(container.Id);
+    const res = await docker_api.containers.start(container.Id);
+    expect(res.status_code).toBe(204);
   });
 
   it('invoke docker_api.containers.attach(Id)', async () => {
-    const res = await docker_api.containers.attach(container.Id, {
-    });
-
+    const res = await docker_api.containers.attach(container.Id, {});
+    expect(res.status_code).toBe(101);
     res.socket.on('data', (data) => {
-      console.log('data', data.toString());
+      expect(data.toString()).toBeDefined();
     });
-
     setTimeout(() => {
       res.socket.destroy();
-    }, 5000);
-
+    }, 2000);
     await once(res.socket, 'close');
   })
 
   it('invoke docker_api.containers.stop(Id)', async () => {
-    await docker_api.containers.stop(container.Id);
+    const res = await docker_api.containers.stop(container.Id);
+    expect(res.status_code).toBe(204);
   });
 
   it('invoke docker_api.containers.remove(Id)', async () => {
-    await docker_api.containers.remove(container.Id);
+    const res = await docker_api.containers.remove(container.Id);
+    expect(res.status_code).toBe(204);
   });
 });

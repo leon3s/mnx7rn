@@ -1,8 +1,7 @@
 import https from 'http';
 import EventEmitter from 'events';
+import type { Socket } from 'net';
 import type { ClientRequest, IncomingHttpHeaders, IncomingMessage } from 'http';
-import { stdout } from 'process';
-import { Socket } from 'net';
 
 type SearchParams = Record<string, any>;
 
@@ -119,15 +118,11 @@ class HttpClientRequest {
     let res: https.ClientRequest;
     return new Promise((resolve, reject) => {
       this.c_req.on('upgrade', (res, socket, head) => {
-        console.log('upgrade');
         const {
           headers,
           statusCode,
           httpVersion,
         } = res;
-        // socket.on('data', (data) => {
-        //   console.log(data.toString());
-        // })
         return resolve({
           data: {} as D,
           stream: res,
@@ -137,12 +132,6 @@ class HttpClientRequest {
           status_code: statusCode || 0,
         });
       });
-      this.c_req.on('response', (res) => {
-        console.log('response', {
-          url: this.p_url.href,
-        });
-        if (this.is_stream) return;
-      })
       this.emitter.once('error', reject);
       this.emitter.once('fullfiled', (r_b_res: Buffer) => {
         if (!this.r_res) {
