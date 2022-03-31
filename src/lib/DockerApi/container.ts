@@ -5,14 +5,6 @@
 
  export default function generator(c: HttpClient) {
   return {
-    list: async (filters: NtwksListArg = {}) => {
-      return c.get<any>('/containers/json', {
-        sp: {
-          filters,
-        }
-      });
-    },
-
     create: async (name: string, data: ContainerCreateArg) => {
       return c.post<{Id: string}>('/containers/create', data, {
         sp: {
@@ -21,8 +13,31 @@
       });
     },
 
-    start: async (name: string) => {
-      return c.post(`/containers/${name}/start`);
-    }
+    start: async (id: string) => {
+      return c.post(`/containers/${id}/start`);
+    },
+
+    stop: async (id: string) => {
+      return c.post(`/containers/${id}/stop`)
+    },
+
+    remove: async (id: string) => {
+      return c.delete(`/containers/${id}`);
+    },
+
+    attach: async (id: string, filter: any) => {
+      return c.post(`/containers/${id}/attach`, null, {
+        is_stream: true,
+        headers: {
+          Upgrade: "tcp",
+          Connection: "Upgrade",
+        },
+        sp: {
+          stream: true,
+          stdout: true,
+          stderr: true,
+        },
+      });
+    },
   }
 }

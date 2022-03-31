@@ -1,6 +1,8 @@
 import https from 'http';
 import EventEmitter from 'events';
 import type { ClientRequest, IncomingHttpHeaders, IncomingMessage } from 'http';
+import { stdout } from 'process';
+import { Socket } from 'net';
 
 type SearchParams = Record<string, any>;
 
@@ -14,6 +16,7 @@ type HttpClientResponse<D> = {
   http_version: string;
   status_code: number;
   stream: https.IncomingMessage;
+  socket: Socket;
   headers: IncomingHttpHeaders;
 }
 
@@ -73,6 +76,7 @@ class HttpClientRequest {
       },
       method: this.method,
       socketPath: this.socket_path,
+      
       hostname: this.p_url.hostname,
       port: protocol_to_port[this.p_url.protocol],
       path: `${this.p_url.pathname}${this.p_url.search}`,
@@ -82,7 +86,7 @@ class HttpClientRequest {
   private _res_handler = (res: IncomingMessage) => {
     this.r_res = res;
     if (this.is_stream) {
-      return;
+      return this.emitter.emit('fullfiled', res);
     }
     let r_b_res: Buffer = Buffer.from([]);
     res.on('data', (data: Buffer) => {
@@ -114,21 +118,30 @@ class HttpClientRequest {
   process = <D>(): Promise<HttpClientResponse<D>> => {
     let res: https.ClientRequest;
     return new Promise((resolve, reject) => {
+      this.c_req.on('upgrade', (res, socket, head) => {
+        console.log('upgrade');
+        const {
+          headers,
+          statusCode,
+          httpVersion,
+        } = res;
+        // socket.on('data', (data) => {
+        //   console.log(data.toString());
+        // })
+        return resolve({
+          data: {} as D,
+          stream: res,
+          headers,
+          socket,
+          http_version: httpVersion,
+          status_code: statusCode || 0,
+        });
+      });
       this.c_req.on('response', (res) => {
-        if (this.is_stream && this.r_res) {
-          const {
-            headers,
-            statusCode,
-            httpVersion,
-          } = this.r_res;
-          return resolve({
-            data: {} as D,
-            stream: res,
-            headers,
-            http_version: httpVersion,
-            status_code: statusCode || 0,
-          });
-        }
+        console.log('response', {
+          url: this.p_url.href,
+        });
+        if (this.is_stream) return;
       })
       this.emitter.once('error', reject);
       this.emitter.once('fullfiled', (r_b_res: Buffer) => {
@@ -145,8 +158,9 @@ class HttpClientRequest {
         const data = this._data_format(r_b_res, headers['content-type']);
         resolve({
           data,
-          stream: this.r_res,
           headers,
+          stream: this.r_res,
+          socket: this.r_res.socket,
           http_version: httpVersion,
           status_code: statusCode || 0,
         });
@@ -208,6 +222,7 @@ export class HttpClient {
       sp: r_sp,
       headers: all_headers,
       socket_path: r_socket_path,
+      is_stream: opts?.is_stream,
     }
   }
 
