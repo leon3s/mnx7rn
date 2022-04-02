@@ -1,9 +1,9 @@
 /**
- * HTTP CLIENT IMPLEMENTATION FOR DOCKER v1.37 /containers
+ ** HTTP CLIENT IMPLEMENTATION FOR DOCKER v1.37 /containers
  */
- import type { HttpClient } from "../HttpClient";
+import type { HttpClient } from "../HttpClient";
 
- export default function generator(c: HttpClient) {
+export default function generator(c: HttpClient) {
   return {
     create: async (name: string, data: ContainerCreateArg) => {
       return c.post<{Id: string}>('/containers/create', data, {
@@ -25,7 +25,7 @@
       return c.delete(`/containers/${id}`);
     },
 
-    attach: async (id: string, filter: any) => {
+    attach: async (id: string, filter?: any) => {
       return c.post(`/containers/${id}/attach`, null, {
         is_stream: true,
         headers: {
@@ -37,6 +37,12 @@
           stdout: true,
           stderr: true,
         },
+      });
+    },
+
+    stats: async (id: string, filter?: any) => {
+      return c.get(`/containers/${id}/stats`, {
+        sp: filter,
       });
     },
   }

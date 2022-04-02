@@ -5,10 +5,6 @@ import type {
 import type {
   Service,
 } from "./Interface";
-import type {
-  Group,
-  GroupCreateReq,
-} from '../../headers/Daemon.h';
 
 /**
  * User service

@@ -58,6 +58,13 @@ describe('[DOCKER API]', () => {
       res.socket.destroy();
     }, 2000);
     await once(res.socket, 'close');
+  });
+
+  it('invoke docker_api.containers.stats(Id)', async () => {
+    const res = await docker_api.containers.stats(container.Id, {
+      stream: false,
+    });
+    console.log(res);
   })
 
   it('invoke docker_api.containers.stop(Id)', async () => {
