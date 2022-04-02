@@ -1,6 +1,6 @@
 /**
  *  HTTP CLIENT IMPLEMENTATION FOR DOCKER v1.37 /networks
- *  
+ *  @see https://docs.docker.com/engine/api/v1.37/#tag/Network
  */
 import type { HttpClient } from "../HttpClient";
 

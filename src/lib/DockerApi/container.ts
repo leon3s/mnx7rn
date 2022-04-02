@@ -1,5 +1,6 @@
 /**
- ** HTTP CLIENT IMPLEMENTATION FOR DOCKER v1.37 /containers
+ *  HTTP CLIENT IMPLEMENTATION FOR DOCKER v1.37 /containers
+ *  @see https://docs.docker.com/engine/api/v1.37/#tag/Container
  */
 import type { HttpClient } from "../HttpClient";
 
@@ -25,7 +26,7 @@ export default function generator(c: HttpClient) {
       return c.delete(`/containers/${id}`);
     },
 
-    attach: async (id: string, filter?: any) => {
+    attach: async (id: string) => {
       return c.post(`/containers/${id}/attach`, null, {
         is_stream: true,
         headers: {
