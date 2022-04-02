@@ -4,7 +4,8 @@ import generator_ntwk from './network';
 import generator_container from './container';
 
 export default class DockerApi {
-  c: HttpClient;
+  private c: HttpClient;
+
   networks: ReturnType<typeof generator_ntwk>;
   containers: ReturnType<typeof generator_container>;
 
