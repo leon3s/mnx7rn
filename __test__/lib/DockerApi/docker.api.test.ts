@@ -49,7 +49,7 @@ describe('[DOCKER API]', () => {
   });
 
   it('invoke docker_api.containers.attach(Id)', async () => {
-    const res = await docker_api.containers.attach(container.Id, {});
+    const res = await docker_api.containers.attach(container.Id);
     expect(res.status_code).toBe(101);
     res.socket.on('data', (data) => {
       expect(data.toString()).toBeDefined();

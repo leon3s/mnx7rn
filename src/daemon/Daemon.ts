@@ -5,6 +5,7 @@ import { Server } from '../lib/HttpServer';
 
 import { store } from './Store';
 import controllers from './controllers';
+import { watch_docker } from './watchers';
 
 import type { Store } from './Store';
 
@@ -40,9 +41,14 @@ class Daemon {
     });
   }
 
+  start_watchers = async () => {
+    await watch_docker();
+  }
+
   boot = async () => {
     this._generate_controllers();
     await this.store.mount(this.store_path);
+    await this.start_watchers();
   }
 
   listen = (host: string, port?: number) => {
