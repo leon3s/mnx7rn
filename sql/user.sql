@@ -1,0 +1,1 @@
+CREATE TABLE user (id int, name varchar(255))

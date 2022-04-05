@@ -64,8 +64,8 @@ describe('[DOCKER API]', () => {
     const res = await docker_api.containers.stats(container.Id, {
       stream: false,
     });
-    console.log(res);
-  })
+    expect(res.status_code).toBe(200);
+  });
 
   it('invoke docker_api.containers.stop(Id)', async () => {
     const res = await docker_api.containers.stop(container.Id);
