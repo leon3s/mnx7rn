@@ -1,0 +1,9 @@
+USE nanocl;
+
+-- CREATE TABLE IF NOT EXISTS user_group (
+--   id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+--   user_id SMALLINT UNSIGNED NOT NULL,
+--   group_id SMALLINT UNSIGNED NOT NULL,
+--   CONSTRAINT user FOREIGN KEY (user_id) REFERENCES `user` (id),
+--   CONSTRAINT group FOREIGN KEY (group_id) REFERENCES `group` (id)
+-- ) ENGINE = InnoDB;

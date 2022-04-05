@@ -1,1 +1,6 @@
-CREATE TABLE user (id int, name varchar(255))
+USE nanocl;
+
+CREATE TABLE IF NOT EXISTS user (
+  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name varchar(100)
+) ENGINE = InnoDB;
