@@ -1,1 +1,1 @@
-DROP DATABASE nanocl
+DROP DATABASE `nanocl`
