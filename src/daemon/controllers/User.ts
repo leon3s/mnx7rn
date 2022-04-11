@@ -5,7 +5,6 @@ import {
   HttpContentTypeEnum,
 } from "../../lib/HttpServer";
 import { middleware_auth } from "../middlewares";
-import { user_service } from "../services";
 
 export default class UserCtrl extends Ctrl {
   "GET /users/whoami" = () => {
@@ -34,16 +33,16 @@ export default class UserCtrl extends Ctrl {
       },
     };
     bind_route(async (req) => {
-      const rsa_pub = await user_service.login({
-        name: req.p_body.name,
-        passwd: req.p_body.passwd,
-      }).catch(() => {
-        throw new HttpErr({
-          status_code: 401,
-          message: 'unauthorized',
-        });
-      });
-      return { key: rsa_pub };
+      // const rsa_pub = await user_service.login({
+      //   name: req.p_body.name,
+      //   passwd: req.p_body.passwd,
+      // }).catch(() => {
+      //   throw new HttpErr({
+      //     status_code: 401,
+      //     message: 'unauthorized',
+      //   });
+      // });
+      // return { key: rsa_pub };
     });
     return route;
   }

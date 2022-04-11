@@ -4,7 +4,6 @@ import {
 } from "../../lib/HttpServer";
 
 import { hmac_sha256 } from "../../lib/crypto";
-import { user_service } from "../services";
 
 declare module "../../lib/HttpServer" {
   interface HttpReqPartial {
@@ -29,19 +28,6 @@ const middleware_auth = (): RouteMiddlewareConfig => async ({}) => {
       authorize_h.replace('Basic ', ''),
       'base64',
     ).toString().split(':');
-    const model = await user_service.model.find_by_id(username)
-      .catch(() => { throw new HttpErr({
-        status_code: 401,
-        message: 'unauthorized'
-      })
-    });
-    const payload_expected = hmac_sha256(JSON.stringify({ id: model.id }), model.passwd);
-    if (payload !== payload_expected) { throw new HttpErr({
-        status_code: 401,
-        message: 'unauthorized',
-      });
-    }
-    req.p_user = model;
     // Old way with a rsa signature
     // const public_key = await user_service.get_pub_key_by_id(model.id);
     // const verify = crypto.createVerify('SHA256');

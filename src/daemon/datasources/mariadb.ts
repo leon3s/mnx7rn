@@ -25,4 +25,6 @@ const sqldb = new SQLDB({
   password: 'root',
 });
 
+export type SqlDB = InstanceType<typeof SQLDB>;
+
 export default sqldb;

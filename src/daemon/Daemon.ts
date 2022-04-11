@@ -1,14 +1,13 @@
-import path from 'path';
 import { stdout } from 'process';
 
 import { Server } from '../lib/HttpServer';
 
-import { store } from './Store';
 import controllers from './controllers';
 import { watch_docker } from './watchers';
 
 import type { Socket } from 'net';
 import type { Store } from './Store';
+
 import sqldb from './datasources/mariadb';
 
 export type DaemonOpts = {
@@ -17,12 +16,9 @@ export type DaemonOpts = {
 
 class Daemon {
   server: Server;
-  store: Store;
-  store_path: string;
   docker_sock?: Socket;
 
   constructor(opts: DaemonOpts) {
-    this.store_path = opts.store_path || path.join(__dirname, '../../store');
     this.server = new Server();
     this.store = store;
     this._watch_exit();

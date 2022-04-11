@@ -4,8 +4,6 @@ import {
   HttpContentTypeEnum,
 } from "../../lib/HttpServer";
 
-import { virtual_env_service } from '../services';
-
 export default class NetworkCtrl extends Ctrl {
   "POST /virual-envs" = () => {
     const [route, bind_route] = route_gen();
@@ -19,7 +17,7 @@ export default class NetworkCtrl extends Ctrl {
       },
     };
     bind_route(async (req) => {
-      return virtual_env_service.create(req.p_body);
+      // return virtual_env_service.create(req.p_body);
     });
     return route;
   }
