@@ -4,3 +4,4 @@ source user.sql;
 source token.sql;
 source group.sql;
 source user_group.sql;
+source namespace.sql;

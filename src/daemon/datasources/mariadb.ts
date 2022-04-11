@@ -1,14 +1,15 @@
 import mariadb from 'mariadb';
 
 class SQLDB {
-  private pool: mariadb.Pool;
+  private pool?: mariadb.Pool;
   private conn?: mariadb.PoolConnection;
-
-  constructor(opts: mariadb.PoolConfig) {
-    this.pool = mariadb.createPool(opts);
-  }
-
+  constructor(
+    private opts: mariadb.PoolConfig,
+  ) {}
+  
   connect = async () => {
+    this.pool = mariadb.createPool(this.opts);
+    this.pool.execute('use nanocl');
     this.conn = await this.pool.getConnection();
   }
 

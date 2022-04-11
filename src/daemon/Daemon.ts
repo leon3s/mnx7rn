@@ -2,33 +2,14 @@ import path from 'path';
 import { stdout } from 'process';
 
 import { Server } from '../lib/HttpServer';
-// import mariadb from 'mariadb';
 
 import { store } from './Store';
 import controllers from './controllers';
 import { watch_docker } from './watchers';
 
+import type { Socket } from 'net';
 import type { Store } from './Store';
-import { Socket } from 'net';
-
-
-// class SQLDB {
-//   private pool: mariadb.Pool;
-//   private conn?: mariadb.PoolConnection;
-
-//   constructor(opts: mariadb.PoolConfig) {
-//     this.pool = mariadb.createPool(opts);
-//   }
-
-//   connect = async () => {
-//     this.conn = await this.pool.getConnection();
-//   }
-
-//   query = (query: string | mariadb.QueryOptions, value?: any) => {
-//     if (!this.conn) throw new Error('Error no connection enable please call .connect() method');
-//     return this.conn.query(query, value);
-//   }
-// }
+import sqldb from './datasources/mariadb';
 
 export type DaemonOpts = {
   store_path?: string;
@@ -39,25 +20,30 @@ class Daemon {
   store: Store;
   store_path: string;
   docker_sock?: Socket;
-  // sqldb: SQLDB;
 
   constructor(opts: DaemonOpts) {
     this.store_path = opts.store_path || path.join(__dirname, '../../store');
     this.server = new Server();
     this.store = store;
-    // this.sqldb = new SQLDB({
-    //   host: '127.0.0.1',
-    //   user: 'root',
-    //   password: 'root',
-    // });
     this._watch_exit();
   }
 
+  private _clean_exit(code: number) {
+    stdout.write('\n');
+    stdout.clearScreenDown();
+    this.server.close();
+    process.exit(code);
+  }
+
   private _watch_exit() {
+    process.once('SIGHUP', () => {
+      this._clean_exit(129);
+    });
     process.once('SIGINT', () => {
-      stdout.write('\n');
-      stdout.clearScreenDown();
-      this.server.close();
+      this._clean_exit(130);
+    });
+    process.once('SIGTERM', () => {
+      this._clean_exit(143);
     });
   }
 
@@ -75,7 +61,7 @@ class Daemon {
 
   boot = async () => {
     this._generate_controllers();
-    // await this.sqldb.connect();
+    await sqldb.connect();
     await this.store.mount(this.store_path);
     await this.start_watchers();
   }

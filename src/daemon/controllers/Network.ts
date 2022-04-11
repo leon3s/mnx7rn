@@ -23,4 +23,23 @@ export default class NetworkCtrl extends Ctrl {
     });
     return route;
   }
+  // "GET /virtual-envs" = () => {
+  //   const [route, bind_route] = route_gen();
+  //   route.req.body.content_type = HttpContentTypeEnum.JSON;
+  //   route.req.search_params = {
+  //     filter: {
+  //       content_type: HttpContentTypeEnum.JSON,
+  //       schema: {
+  //         type: "object",
+  //         properties: {
+  //           name: {
+  //             type: "string"
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   return route;
+  // }
 }
