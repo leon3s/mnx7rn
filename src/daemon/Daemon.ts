@@ -6,21 +6,15 @@ import controllers from './controllers';
 import { watch_docker } from './watchers';
 
 import type { Socket } from 'net';
-import type { Store } from './Store';
 
 import sqldb from './datasources/mariadb';
-
-export type DaemonOpts = {
-  store_path?: string;
-}
 
 class Daemon {
   server: Server;
   docker_sock?: Socket;
 
-  constructor(opts: DaemonOpts) {
+  constructor() {
     this.server = new Server();
-    this.store = store;
     this._watch_exit();
   }
 
@@ -58,7 +52,6 @@ class Daemon {
   boot = async () => {
     this._generate_controllers();
     await sqldb.connect();
-    await this.store.mount(this.store_path);
     await this.start_watchers();
   }
 

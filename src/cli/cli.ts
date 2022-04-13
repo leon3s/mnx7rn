@@ -6,6 +6,7 @@ import {
   login,
   daemon,
   network,
+  namespace,
 } from './commands';
 
 import type { Commands } from './args_parser';
@@ -34,6 +35,7 @@ const commands: Commands = {
   daemon,
   network,
   login,
+  namespace,
   '-v': print_version,
   'version': print_version,
   '--version': print_version,
@@ -54,7 +56,8 @@ export function main() {
     process.exit(1);
   }
   command(...[...argv].slice(3))
-  .catch(() => {
+  .catch((err) => {
+    console.log(err);
     process.exit(1);
   });
 };

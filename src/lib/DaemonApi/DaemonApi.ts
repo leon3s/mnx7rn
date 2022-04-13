@@ -1,15 +1,18 @@
 import { HttpClient } from "../HttpClient";
 import user_generator from "./user";
+import namespace_generator from './namespace';
 
 class DaemonApi {
-  c: HttpClient;
+  private _c: HttpClient;
   users: ReturnType<typeof user_generator>;
+  namespaces: ReturnType<typeof namespace_generator>;
 
   constructor(host?: string) {
-    this.c = new HttpClient({
+    this._c = new HttpClient({
       socket_path: host,
     });
-    this.users = user_generator(this.c);
+    this.users = user_generator(this._c);
+    this.namespaces = namespace_generator(this._c);
   }
 }
 

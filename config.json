@@ -1,0 +1,5 @@
+{
+  "target": "just-test",
+  "index": "just-test.js",
+  "static": true
+}

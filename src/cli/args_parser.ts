@@ -37,5 +37,6 @@ export default async function args_parser(args: string[], args_schema: ArgSchema
       throw new Error(`${schema.name} is required but not found.`);
     }
   }
+  console.log(args_values, args_new);
   return {args_values, args_new};
 }

@@ -5,7 +5,7 @@
   "description": "",
   "main": "./dist/index.js",
   "bin": {
-    "nanoc": "./dist/index.js"
+    "nanocl": "./dist/index.js"
   },
   "scripts": {
     "start": "node .",

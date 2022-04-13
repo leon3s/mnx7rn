@@ -2,8 +2,6 @@ import {
   exit,
   stdout,
 } from 'process';
-import { HttpClient } from '../../lib/HttpClient';
-
 import args_parser from '../args_parser';
 
 import type { Commands } from '../args_parser';
@@ -94,14 +92,14 @@ const commands: Commands = {
       stdout.write(`see nanocl network connect --help\n`);
       exit(1);
     });
+    if (args_values.help) {
+      print_create_help();
+      exit(0);
+    }
     if (args_new.length !== 1) {
       stdout.write(`nanocl network create \`${args.join(' ')}\` is not valid\n`);
       stdout.write('see \`nanocl network create --help\`\n')
       process.exit(1);
-    }
-    if (args_values.help) {
-      print_create_help();
-      exit(0);
     }
     // daemon_api
     // const res = await client.post<any>('/networks', {

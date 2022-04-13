@@ -18,9 +18,11 @@ export default class NamepaceCtrl extends Ctrl {
       },
     };
     bind_route(async (req) => {
-      await sqldb.query("INSERT INTO namespace (name) VALUES (:name)", {
-        name: req.p_body.name,
-      });
+      const res = await sqldb.query("INSERT INTO `namespace` (`name`) VALUES (?)", [
+        req.p_body.name,
+      ]);
+      console.log(res);
+      return res;
     });
     return route;
   }
