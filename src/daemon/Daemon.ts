@@ -60,9 +60,12 @@ class Daemon {
   }
 
   close = async () => {
-    if (this.docker_sock) {
-      this.docker_sock.end();
-    }
+    await new Promise<void>((resolve) => {
+      this.docker_sock?.end(() => {
+        resolve();
+      });
+    });
+    await sqldb.close();
     await this.server.close();
   }
 }

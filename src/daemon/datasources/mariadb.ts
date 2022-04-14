@@ -17,6 +17,11 @@ class SQLDB {
     if (!this.conn) throw new Error('Error no connection enable please call .connect() method');
     return this.conn.query(query, value);
   }
+
+  close = async () => {
+    await this.conn?.end();
+    await this.pool?.end();
+  }
 }
 
 const sqldb = new SQLDB({

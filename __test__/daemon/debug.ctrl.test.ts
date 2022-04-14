@@ -17,15 +17,13 @@ describe('DEBUG CONTROLLER', () => {
     daemon.listen(socket_path);
   });
 
-  it('invoke [GET /debug/ping] expect 401', async () => {
-    const res = await client.get('/debug/ping').catch((err) => {
-      expect(err.response.status).toBe(401);
-    });
-    expect(res).toBeUndefined();
+  it('invoke [GET /debug/ping] expect 200', async () => {
+    const res = await client.get('/debug/ping');
+    expect(res.data.message).toBe('pong');
+    expect(res.status).toBe(200);
   });
 
   afterAll(async () => {
-    await daemon.store.umount();
     daemon.close();
   });
 });
